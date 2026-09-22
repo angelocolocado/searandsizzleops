@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react"
 import IngredientsStockTable from "./ingredient-stock-table/page"
 import { Kpi } from "./kpi"
-import { DataNav } from "./data-nav"
 import { AddUpdateDrawer } from "./add-update-drawer"
 import { Drawer } from "~/components/ui/drawer"
 import { useIsMobile } from "~/hooks/use-mobile"
-import { CategoriesManager, type CategoryDataType } from "./categories-manager"
+import { CategoriesManager } from "../categories-manager"
 import type { IngredientDataType } from "./ingredient-stock-table/columns"
+import { type CategoryDataType } from "../categories-manager"
+import { DataNav } from "../data-nav"
 
 type DrawerMode = "create" | "update"
 
@@ -59,7 +60,7 @@ export function IngredientsStock({ categories_data, ingredients_data } : Compone
           <div className="space-y-5">
             <Kpi ingredients_data={ingredients_data} />
             <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-              <DataNav handleOpen={openCreateDrawer} />
+              <DataNav mode="ingredients" handleOpen={openCreateDrawer} />
 
               <div className="p-3">
                 <IngredientsStockTable ingredients_data={ingredients_data} categories_data={categories_data} onEditItem={openUpdateDrawer} />
@@ -67,7 +68,7 @@ export function IngredientsStock({ categories_data, ingredients_data } : Compone
             </section>
           </div>
 
-          <CategoriesManager categories_data={categories_data} />
+          <CategoriesManager from="ingredient-stock" categories_data={categories_data} />
           <AddUpdateDrawer
             categories={categories_data}
             open={drawerState.open}

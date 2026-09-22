@@ -11,20 +11,33 @@ export async function clientAction({ request } : Route.ClientActionArgs){
     const formData = await request.formData()
     const data = Object.fromEntries(formData)
 
-    switch(data.intent){
-        case "delete":
-            return await handleDelete(data)
-        case "add":
-            return await handleAdd(data)
-        case "update":
-            return await handleUpdate(data)
+    if(data.where === "recipe-mapping"){
+        switch(data.intent){
+            case "delete":
+                return await handleDelete(data, "recipe")
+            case "add":
+                return await handleAdd(data, "recipe")
+            case "update":
+                return await handleUpdate(data, "recipe")
+        }
+    }
+
+    if(data.where === "ingredient-stock"){
+        switch(data.intent){
+            case "delete":
+                return await handleDelete(data, "ingredient")
+            case "add":
+                return await handleAdd(data, "ingredient")
+            case "update":
+                return await handleUpdate(data, "ingredient")
+        }
     }
 
 }
 
-async function handleAdd(data: any){
+async function handleAdd(data: any, route: string){
     try{
-        const requestPromise = api.post(`v1/ingredient-categories`, data)
+        const requestPromise = api.post(`v1/${route}-categories`, data)
 
         toast.promise(requestPromise, {
             loading: "Adding category...",
@@ -49,9 +62,9 @@ async function handleAdd(data: any){
     }
 }
 
-async function handleUpdate(data: any){
+async function handleUpdate(data: any, route: string){
     try{
-        const requestPromise = api.put(`v1/ingredient-categories/${data.id}`, {
+        const requestPromise = api.put(`v1/${route}-categories/${data.id}`, {
             category: data.category,
         })
 
@@ -79,9 +92,9 @@ async function handleUpdate(data: any){
     }
 }  
 
-async function handleDelete(data: any){
+async function handleDelete(data: any, route: string){
     try{
-        const requestPromise = api.delete(`v1/ingredient-categories/${data.id}`)
+        const requestPromise = api.delete(`v1/${route}-categories/${data.id}`)
 
         toast.promise(requestPromise, {
             loading: "Removing category...",

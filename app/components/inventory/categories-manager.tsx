@@ -32,11 +32,12 @@ export type CategoryDataType = {
 
 type ComponentProps = {
     categories_data: CategoryDataType[]
+    from: "recipe-mapping" | "ingredient-stock"
 }
 
 type AddCatSchemaType = z.infer<typeof addCatSchema>
 
-export function CategoriesManager({ categories_data } : ComponentProps) {
+export function CategoriesManager({ categories_data, from } : ComponentProps) {
 
     const [categories, setCategories] = useState<CategoryDataType[]>([])
     const [viewMode, setViewMode] = useState<"list" | "tile">("list")
@@ -61,6 +62,7 @@ export function CategoriesManager({ categories_data } : ComponentProps) {
     const handleAdd = (data : any) => {
         fetcher.submit({
             intent: "add",
+            where: from,
             category: data.category
         },{
             method: "POST",
@@ -73,6 +75,7 @@ export function CategoriesManager({ categories_data } : ComponentProps) {
     const handleRemove = (category_id: Number) => {
         fetcher.submit({
             intent: "delete",
+            where: from,
             id: String(category_id)
         },{
             method: "POST",
@@ -94,6 +97,7 @@ export function CategoriesManager({ categories_data } : ComponentProps) {
 
         fetcher.submit({
             intent: "update",
+            where: from,
             id: String(category_id),
             category: nextValue
         }, {
@@ -124,7 +128,10 @@ export function CategoriesManager({ categories_data } : ComponentProps) {
                 <div className="flex items-center justify-between gap-3">
                 <div>
                     <p className="text-sm font-medium hidden text-muted-foreground">Inventory</p>
-                    <h1 className="text-2xl font-semibold tracking-tight">Category manager</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">
+                        {from === "ingredient-stock" && 'Ingredients Category'}
+                        {from === "recipe-mapping" && 'Recipes Category'}
+                    </h1>
                 </div>
                 </div>
 
