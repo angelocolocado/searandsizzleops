@@ -1,4 +1,5 @@
 import { ArrowDownToLine, Plus, Printer, RefreshCw, Search } from "lucide-react";
+import { useRevalidator } from "react-router";
 import { Button } from "~/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "~/components/ui/input-group";
 
@@ -7,6 +8,9 @@ type ComponentProps = {
 }
 
 export function DataNav({ handleOpen } : ComponentProps){
+
+    const revalidator = useRevalidator()
+
     return (<>
         <div className="flex flex-col gap-3 border-b bg-muted/30 p-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-1 items-center gap-2">
@@ -19,9 +23,20 @@ export function DataNav({ handleOpen } : ComponentProps){
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-2">
-                <RefreshCw className="size-4" />
-                Refresh
+                <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => revalidator.revalidate()}
+                disabled={revalidator.state === "loading"}
+                >
+                    <RefreshCw
+                        className={`size-4 ${
+                        revalidator.state === "loading" ? "animate-spin" : ""
+                        }`}
+                    />
+                    {revalidator.state === "loading" ? "Refreshing..." : "Refresh"}
                 </Button>
                 <Button variant="secondary" size="sm" className="gap-2">
                 <ArrowDownToLine className="size-4" />

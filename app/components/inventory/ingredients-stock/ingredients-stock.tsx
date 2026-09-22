@@ -57,7 +57,7 @@ export function IngredientsStock({ categories_data, ingredients_data } : Compone
           swipeDirection={isMobile ? "down" : "right"}
         >
           <div className="space-y-5">
-            <Kpi />
+            <Kpi ingredients_data={ingredients_data} />
             <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
               <DataNav handleOpen={openCreateDrawer} />
 

@@ -127,7 +127,6 @@ export function createColumns({ onEdit, categories }: { onEdit: (item: Ingredien
       ),
       cell: (info) => {
         const categoryId = info.getValue()
-        console.log(categoryId)
         const category = categories.find((category) => category.id === Number(categoryId))
 
         return category?.category || '---'
@@ -257,7 +256,6 @@ export function createColumns({ onEdit, categories }: { onEdit: (item: Ingredien
 
         cell: (info) => {
           const status = info.getValue()
-          console.log(status)
           return (
             <span className={`py-1 px-2 rounded-xl ${stockStatusStyle[(Number(status))]}`}>
               {stockStatusLabels[Number(status)]}

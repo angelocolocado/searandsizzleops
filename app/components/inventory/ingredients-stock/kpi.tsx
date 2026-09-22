@@ -1,12 +1,6 @@
 import { Plus } from "lucide-react";
 import { Button } from "~/components/ui/button";
-
-const stockKpis = [
-  { label: "Low stock", value: "16 items", detail: "Needs reorder soon", tone: "rose" },
-  { label: "Critical stock", value: "5 items", detail: "Action required", tone: "amber" },
-  { label: "Total ingredients", value: "248", detail: "Across all categories", tone: "slate" },
-  { label: "Healthy stock", value: "227", detail: "Ready for service", tone: "emerald" },
-]
+import type { IngredientDataType } from "./ingredient-stock-table/columns";
 
 const toneClasses: Record<string, string> = {
   rose: "bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-200 dark:bg-rose-500/10 dark:text-rose-200 dark:ring-rose-500/20",
@@ -15,7 +9,25 @@ const toneClasses: Record<string, string> = {
   emerald: "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-200 dark:ring-emerald-500/20",
 }
 
-export function Kpi(){
+type ComponentProps = {
+  ingredients_data: IngredientDataType[]
+}
+
+export function Kpi({ ingredients_data } : ComponentProps){
+
+    console.log(ingredients_data)
+
+    const criticalStock = ingredients_data.filter((ing) => ing.quantity < ing.reorder_level).length;
+    const lowStock = ingredients_data.filter((ing) => ing.quantity >= ing.reorder_level && ing.quantity < ing.reorder_level + 6).length;
+    const healthyStock = ingredients_data.filter((ing) => ing.quantity >= ing.reorder_level + 6).length;
+
+    const stockKpis = [
+        { label: "Low stock", value: lowStock + " items", detail: "Needs reorder soon", tone: "rose" },
+        { label: "Critical stock", value: criticalStock + " items", detail: "Action required", tone: "amber" },
+        { label: "Total ingredients", value: ingredients_data.length + " items", detail: "Across all categories", tone: "slate" },
+        { label: "Healthy stock", value: healthyStock + " items", detail: "Ready for service", tone: "emerald" },
+    ]
+
     return (<>
     
         <section className="rounded-2xl border bg-card shadow-sm">
