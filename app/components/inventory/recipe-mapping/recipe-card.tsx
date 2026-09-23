@@ -1,7 +1,9 @@
 
+import { cn } from "cn"
 import { ArrowRight } from "lucide-react"
 import { NavLink } from "react-router"
 import { Button } from "~/components/ui/button"
+import { statusStyles } from "./manage-recipe/header"
 
 type ComponentProps = {
   recipe_name: string
@@ -13,14 +15,6 @@ type ComponentProps = {
   onView?: () => void
 }
 
-const statusStyles: Record<ComponentProps["status"], string> = {
-  active:
-    "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300",
-  "pulled-out":
-    "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300",
-  "r&d":
-    "border-violet-500/20 bg-violet-500/10 text-violet-700 dark:border-violet-500/30 dark:bg-violet-500/10 dark:text-violet-300",
-}
 
 const formatDate = (date: string) =>
   new Date(date).toLocaleDateString("en-US", {
@@ -55,6 +49,7 @@ export function RecipePreviewCard({
         >
           {status}
         </span>
+
       </div>
 
       <div className="mt-3 flex items-center justify-between">

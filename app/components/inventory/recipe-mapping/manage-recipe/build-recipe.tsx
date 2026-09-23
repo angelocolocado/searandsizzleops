@@ -20,8 +20,6 @@ export default function BuildRecipe({ recipe_details, categories_data, ingredien
         revalidate()
     }, [revalidate])
 
-    console.log(recipe_details)
-
     return (
         <main className="animate-in fade-in duration-500 ease-out scroll-smooth px-5 py-4">
             <BuildRecipeHeader

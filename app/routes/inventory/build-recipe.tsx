@@ -48,11 +48,44 @@ export async function clientAction({ request, params } : Route.ClientActionArgs)
   const formData = await request.formData()
   const data = Object.fromEntries(formData)
 
+
   if(data.intent === "add_recipe_ingredient") return await handleAddRecipeIngredient(data)
   else if(data.intent === "update_recipe_ingredient") return await handleUpdateRecipeIngredient(data)
   else if(data.intent === "delete_recipe_ingredient") return await handleDeleteRecipeIngredient(data)
+  else if(data.intent === "publish_recipe") return await handlePublishRecipe(params.id, data)
+  else if(data.intent === "unpublish_recipe") return await handlePublishRecipe(params.id, data)
 
     
+}
+
+
+async function handlePublishRecipe(params: any, data: any) {
+  try{
+    const requestPromise = api.put(`v1/recipe/${params}/publish`, data)
+
+    toast.promise(requestPromise, {
+      loading: data.intent === "unpublish_recipe" ? "Marking recipe unavailable..." : "Publishing Recipe...",
+      success: data.intent === "unpublish_recipe" ? "Recipe marked as unavailable." : "Recipe published!",
+      error: (err) => {
+        if(isAxiosError(err)){
+          return err.response?.data?.message || "Something went wrong, Please try again later."
+        }
+      }
+    })
+
+    const result = await requestPromise
+
+    return {
+      success: true,
+      intent: data.intent,
+      id: result.data.id || data.id
+    }
+  } catch(err) {
+    return {
+      success: false,
+      intent: data.intent
+    }
+  }
 }
 
 async function handleAddRecipeIngredient(data: any){

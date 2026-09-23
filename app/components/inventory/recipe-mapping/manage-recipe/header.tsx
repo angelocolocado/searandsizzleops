@@ -2,9 +2,10 @@ import { cn } from "cn"
 import { Button } from "~/components/ui/button"
 import { Dialog } from "~/components/ui/dialog"
 import { SetupRecipeDialog } from "../setup-dialog"
-import { ArrowLeft, CalendarDays, Clock3, FileText, Pencil, Tag } from "lucide-react"
+import { CalendarDays, Clock3, FileText, Pencil, Tag } from "lucide-react"
 import { useState } from "react"
 import type { CategoryDataType } from "../../categories-manager"
+import { PublishRecipeUI } from "./publish-recipe"
 
 export type RecipeIngredientType = {
     id: string
@@ -46,10 +47,10 @@ const formatDate = (date?: string) => {
     })
 }
 
-const statusStyles: Record<string, string> = {
-    active:
+export const statusStyles: Record<string, string> = {
+    "Available":
         "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-300",
-    "pulled-out":
+    "Unavailable":
         "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:border-amber-500/30 dark:text-amber-300",
     "Incomplete":
         "border-red-500/20 bg-red-500/10 text-white-700 dark:border-violet-500/30 dark:text-violet-300",
@@ -76,7 +77,8 @@ export function BuildRecipeHeader({ recipe_details, categories_data, handleEditS
                                     )}
                                 >
                                     {status}
-                                </span>
+                                </span>                   
+                                <PublishRecipeUI recipe_status={recipe_details?.status || "Unknown"} />
                             </div>
                             <h1 className="max-w-3xl truncate text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
                                 {recipe_details?.recipe_name || "Recipe details"}
