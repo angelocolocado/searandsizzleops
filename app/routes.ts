@@ -7,7 +7,8 @@ export default [
         route("/inventory/stock", "routes/inventory/inventory-stock.tsx"),
         route("/inventory/ingredients", "routes/inventory/inventory-ingredients.tsx"),
         route("/inventory/categories", "routes/inventory/category-manager.tsx"),
-        route("/inventory/recipes", "routes/inventory/recipe-mapping.tsx")
+        route("/inventory/recipes", "routes/inventory/recipe-mapping.tsx"),
+        route("/inventory/recipes/:id", "routes/inventory/build-recipe.tsx")
     ])
     
 

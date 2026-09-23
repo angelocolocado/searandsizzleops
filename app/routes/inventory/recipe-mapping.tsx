@@ -62,11 +62,12 @@ async function handleSetupRecipe(data: any){
       }
     })
 
-    await requestPromise
+    const result = await requestPromise
 
     return {
       success: true,
-      intent: "setup_recipe"
+      intent: "setup_recipe",
+      id: result.data.id
     }
   } catch(err) {
     return {

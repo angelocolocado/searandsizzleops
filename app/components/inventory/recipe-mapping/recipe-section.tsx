@@ -44,6 +44,8 @@ export function RecipeSection({ recipes_data } : ComponentProps){
                     date_added={recipe.created_at}
                     status={recipe.status}
                     onView={() => {}}
+                    id={recipe.id}
+                    category={recipe.category}
                     />
                 ))}
                 </div>

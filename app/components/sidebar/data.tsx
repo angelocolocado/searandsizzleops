@@ -28,6 +28,17 @@ export const navItems = {
       ],
     },
     {
+      title: "Recipe Mapping",
+      isHidden: true,
+      url: "/inventory/recipes/:id",
+      icon: ChefHat,
+      breadcrumbs: [
+        { label: "Inventory Management", url: "#" },
+        { label: "Recipe Mapping", url: "/inventory/recipes" },
+        { label: "Build Recipe", url: "#" },
+      ],
+    },
+    {
       title: "Ingredient Stock",
       url: "/inventory/ingredients",
       icon: FolderTree,

@@ -12,6 +12,7 @@ import { NavLink, useLocation } from "react-router"
 type InventoryNavItem = {
     title: string,
     url: string,
+    isHidden?: boolean,
     icon: React.ElementType
 }
 
@@ -27,8 +28,8 @@ export function InventorySidebar({ inventoryNav } : ComponentProps) {
           <SidebarGroupLabel>Inventory Management</SidebarGroupLabel>
           <SidebarGroupContent>
               <SidebarMenu>
-              {inventoryNav.map((item) => {
-                  const isActive = location.pathname === item.url
+              {inventoryNav.filter((item) => !item.isHidden).map((item) => {
+                const isActive = location.pathname === item.url
 
                   return (
                       <SidebarMenuItem key={item.title}>

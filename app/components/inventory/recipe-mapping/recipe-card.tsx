@@ -1,5 +1,6 @@
 
 import { ArrowRight } from "lucide-react"
+import { NavLink } from "react-router"
 import { Button } from "~/components/ui/button"
 
 type ComponentProps = {
@@ -7,6 +8,8 @@ type ComponentProps = {
   latest_update: string
   date_added: string
   status: string
+  id: string
+  category: string
   onView?: () => void
 }
 
@@ -31,8 +34,11 @@ export function RecipePreviewCard({
   date_added,
   latest_update,
   status,
+  id,
+  category,
   onView,
 }: ComponentProps) {
+
   return (
     <article className="animate-in fade-in duration-500 ease-out w-full rounded-lg border bg-muted/40 p-3.5 shadow-[0_1px_0_rgba(15,23,42,0.02)] transition-all duration-200 hover:bg-muted/50">
       <div className="flex items-start justify-between gap-3">
@@ -51,16 +57,23 @@ export function RecipePreviewCard({
         </span>
       </div>
 
-      <div className="mt-3 flex items-center justify-end">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={onView}
-          className="h-7 px-2.5 text-xs font-medium text-foreground/80"
-        >
-          View Recipe <ArrowRight />
-        </Button>
+      <div className="mt-3 flex items-center justify-between">
+
+        <p className="mt-1 text-xs text-muted-foreground truncate">{category}</p>
+
+        <NavLink to={`/inventory/recipes/${id}`}>
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
+            onClick={onView}
+            className="h-7 px-2.5 text-xs font-medium text-foreground/80"
+            id={id}
+          >
+            View Recipe <ArrowRight />
+          </Button>
+        </NavLink>
+        
       </div>
     </article>
   )

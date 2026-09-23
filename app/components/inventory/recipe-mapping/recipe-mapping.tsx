@@ -18,6 +18,8 @@ export type RecipesPreviewDataType = {
   updated_at: string
   created_at: string
   status: string
+  id: string
+  category: string
 }
 
 type ComponentProps = {
