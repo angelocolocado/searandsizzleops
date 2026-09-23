@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { ArrowLeft, CalendarDays, Clock3, FileText, Pencil, Tag } from "lucide-react"
 import { NavLink, useRevalidator } from "react-router"
 import { cn } from "cn"
@@ -50,7 +50,11 @@ const formatDate = (date?: string) => {
 export default function BuildRecipe({ recipe_details, categories_data }: ComponentProps) {
     const status = recipe_details?.status || "draft"
     const [isEditOpen, setIsEditOpen] = useState(false)
-    const revalidator = useRevalidator()
+    const { revalidate } = useRevalidator()
+    const handleEditSuccess = useCallback(() => {
+        setIsEditOpen(false)
+        revalidate()
+    }, [revalidate])
 
     return (
         <main className="animate-in fade-in duration-500 ease-out scroll-smooth px-5 py-4">
@@ -137,11 +141,8 @@ export default function BuildRecipe({ recipe_details, categories_data }: Compone
                     categories_data={categories_data}
                     recipe_details={recipe_details}
                     mode="edit"
-                    actionPath={`/inventory/recipes/${recipe_details?.recipe_id || ""}`}
-                    onSuccess={() => {
-                        setIsEditOpen(false)
-                        revalidator.revalidate()
-                    }}
+                    actionPath="/inventory/recipes"
+                    onSuccess={handleEditSuccess}
                 />
             </Dialog>
         </main>

@@ -46,7 +46,38 @@ export async function clientAction({ request } : Route.ClientActionArgs){
   const formData = await request.formData()
   const data = Object.fromEntries(formData)
 
+
   if(data.intent === "setup_recipe") return await handleSetupRecipe(data)
+  else if(data.intent === "edit_recipe") return await handleUpdateRecipe(data)
+}
+
+async function handleUpdateRecipe(data: any){
+
+  try{
+    const requestPromise = api.put(`v1/recipes/${data.id}`, data)
+
+    toast.promise(requestPromise, {
+      loading: "Updating Recipe...",
+      error: (err) => {
+        if(isAxiosError(err)){
+          return err.response?.data?.message || "Something went wrong, Please try again later."
+        }
+      }
+    })
+
+    const result = await requestPromise
+
+    return {
+      success: true,
+      intent: "edit_recipe",
+      id: result.data.id || data.id
+    }
+  } catch(err) {
+    return {
+      success: false,
+      intent: "edit_recipe"
+    }
+  }
 }
 
 async function handleSetupRecipe(data: any){

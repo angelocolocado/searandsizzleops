@@ -1,5 +1,5 @@
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useForm } from "react-hook-form"
 import z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -95,7 +95,7 @@ type ComponentProps = {
         yield_unit: string
         notes?: string | null
     } | null
-    mode?: "create" | "edit"
+    mode?: "setup" | "edit"
     actionPath?: string
     onSuccess?: () => void
 }
@@ -105,22 +105,27 @@ const yieldUnits = ["serving", "piece", "portion", "bowl", "plate", "glass"]
 export function SetupRecipeDialog({
     categories_data,
     recipe_details,
-    mode = "create",
+    mode = "setup",
     actionPath = "/inventory/recipes",
     onSuccess,
 }: ComponentProps){
 
     const navigate = useNavigate()
     const fetcher = useFetcher()
+    const handledResponseRef = useRef<object | null>(null)
 
     useEffect(() => {
+        const responseId = fetcher.data?.id
         if (
             fetcher.data?.success === true &&
             fetcher.data?.intent === `${mode}_recipe` &&
-            fetcher.data?.id
+            responseId &&
+            handledResponseRef.current !== fetcher.data
         ) {
-            if (mode === "create") {
-                navigate(`/inventory/recipes/${fetcher.data.id}`)
+            handledResponseRef.current = fetcher.data
+
+            if (mode === "setup") {
+                navigate(`/inventory/recipes/${responseId}`)
             } else {
                 onSuccess?.()
             }
