@@ -33,6 +33,17 @@ export async function clientAction({ request } : Route.ClientActionArgs){
         }
     }
 
+    if(data.where === "pos-menu"){
+        switch(data.intent){
+            case "delete":
+                return await handleDelete(data, "menu")
+            case "add":
+                return await handleAdd(data, "menu")
+            case "update":
+                return await handleUpdate(data, "menu")
+        }
+    }
+
 }
 
 async function handleAdd(data: any, route: string){

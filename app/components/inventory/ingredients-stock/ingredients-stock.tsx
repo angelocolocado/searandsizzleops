@@ -67,7 +67,7 @@ export function IngredientsStock({ categories_data, ingredients_data } : Compone
             </section>
           </div>
 
-          <CategoriesManager from="ingredient-stock" actionPath="/inventory/categories" title="Ingredients Category" categories_data={categories_data} />
+          <CategoriesManager from="ingredient-stock" actionPath="/categories" title="Ingredients Category" categories_data={categories_data} />
           <AddUpdateDrawer
             categories={categories_data}
             open={drawerState.open}

@@ -6,12 +6,12 @@ export default [
         index("routes/home.tsx"),
         route("/inventory/stock", "routes/inventory/inventory-stock.tsx"),
         route("/inventory/ingredients", "routes/inventory/inventory-ingredients.tsx"),
-        route("/inventory/categories", "routes/inventory/category-manager.tsx"),
         route("/inventory/recipes", "routes/inventory/recipe-mapping.tsx"),
         route("/inventory/recipes/:id", "routes/inventory/build-recipe.tsx"),
 
         route("/pos/menu", "routes/pos/menu/menu.tsx"),
-    ])
+    ]),
+    route("/categories", "routes/category-manager.tsx"),
     
 
 ] satisfies RouteConfig;

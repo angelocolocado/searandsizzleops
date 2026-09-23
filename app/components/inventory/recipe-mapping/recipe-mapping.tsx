@@ -54,7 +54,7 @@ export function RecipeMapping({ categories_data, recipes_data } : ComponentProps
             </section>
           </div>
 
-          <CategoriesManager from="recipe-mapping" actionPath="/inventory/categories" title="Recipes Category" categories_data={categories_data} />
+          <CategoriesManager from="recipe-mapping" actionPath="/categories" title="Recipes Category" categories_data={categories_data} />
           <SetupRecipeDialog categories_data={categories_data} />
           
         </Dialog>
