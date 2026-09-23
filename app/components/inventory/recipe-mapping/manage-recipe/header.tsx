@@ -61,7 +61,7 @@ export function BuildRecipeHeader({ recipe_details, categories_data, handleEditS
 
     return (<>
         <section className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-                <div className="border-b bg-muted/20 px-5 py-4 sm:px-7 sm:py-5">
+                <div className="bg-muted/20 px-5 py-4 sm:px-7 sm:py-5">
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                         <div className="min-w-0">
                             <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -131,10 +131,6 @@ export function BuildRecipeHeader({ recipe_details, categories_data, handleEditS
                             )}
                         </div>
                     </div>
-                </div>
-
-                <div className="px-5 py-6 sm:px-7">
-                    <p className="text-sm text-muted-foreground">Recipe workspace</p>
                 </div>
         </section>
 
