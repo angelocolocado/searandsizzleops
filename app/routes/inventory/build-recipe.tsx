@@ -4,6 +4,7 @@ import type { Route } from "./+types/build-recipe";
 import api from "~/lib/axios";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import type { IngredientDataType } from "~/components/inventory/ingredients-stock/ingredient-stock-table/columns";
 
 export function meta({} : Route.MetaArgs){
     return [
@@ -19,19 +20,23 @@ export async function clientLoader({ request } : Route.ClientLoaderArgs){
   if(!recipeId) return
 
   try{
-    const [recipeDetails, categories] = await Promise.all([
-      api.get(`v1/recipe/${recipeId}`),
+    const [recipeDetails, categories, ingredient_stocks] = await Promise.all([
+      api.get(`/v1/recipe/${recipeId}`),
       api.get('/v1/recipe-categories'),
+      api.get('/v1/ingredient-stocks')
     ])
+
 
     return {
       recipeDetails: recipeDetails.data,
       categories: categories.data as CategoryDataType[],
+      ingredient_stocks: ingredient_stocks.data as IngredientDataType[]
     }
   } catch(err) {
     return {
       recipeDetails: null,
       categories: [] as CategoryDataType[],
+      ingredient_stocks : [] as IngredientDataType[]
     }
   }
 
@@ -43,35 +48,90 @@ export async function clientAction({ request, params } : Route.ClientActionArgs)
   const formData = await request.formData()
   const data = Object.fromEntries(formData)
 
-  if(data.intent !== "update_recipe") return
+  if(data.intent === "add_recipe_ingredient") return await handleAddRecipeIngredient(data)
+  else if(data.intent === "update_recipe_ingredient") return await handleUpdateRecipeIngredient(data)
+  else if(data.intent === "delete_recipe_ingredient") return await handleDeleteRecipeIngredient(data)
 
-  try {
-    const { intent, id, ...recipeData } = data
-    const requestPromise = api.put(`v1/recipe/${params.id}`, recipeData)
+    
+}
+
+async function handleAddRecipeIngredient(data: any){
+  try{
+    const requestPromise = api.post('/v1/recipe', data)
 
     toast.promise(requestPromise, {
-      loading: "Updating recipe...",
-      error: (err) => isAxiosError(err)
-        ? err.response?.data?.message || "Something went wrong, please try again later."
-        : "Something went wrong, please try again later.",
+      loading: "Adding recipe ingredient...",
+      success: "Recipe ingredient added!",
+      error: (err) => isAxiosError(err) 
+        ? err.response?.data?.message || "Something went wrong while adding the recipe ingredient."
+        : "Something went wrong while adding the recipe ingredient.",
     })
-
-    const result = await requestPromise
 
     return {
       success: true,
-      intent: "update_recipe",
-      id: result.data.id || params.id,
+      intent: "add_recipe_ingredient"
+    }
+  } catch(err) {
+    return {
+      success: false,
+      intent: "add_recipe_ingredient"
+    }
+  }
+}
+
+async function handleUpdateRecipeIngredient(data: any){
+  
+  try{
+    const requestPromise = api.put(`/v1/recipe/${data.id}`, data)
+
+    toast.promise(requestPromise, {
+      loading: "Updating recipe ingredient...",
+      success: "Recipe ingredient updated successfully!",
+      error: (err) => isAxiosError(err)
+        ? err.response?.data?.message || "Something went wrong while updating the recipe ingredient."
+        : "Something went wrong while updating the recipe ingredient.",
+    })
+
+    await requestPromise
+
+    return {
+      success: true,
+      intent: "update_recipe_ingredient",
     }
   } catch {
     return {
       success: false,
-      intent: "update_recipe",
+      intent: "update_recipe_ingredient",
     }
   }
+}
 
+async function handleDeleteRecipeIngredient(data: any){
+  try{
+    const requestPromise = api.delete(`/v1/recipe/${data.id}`)
+
+    toast.promise(requestPromise, {
+      loading: "Deleting recipe ingredient...",
+      success: "Recipe ingredient deleted successfully!",
+      error: (err) => isAxiosError(err)
+        ? err.response?.data?.message || "Something went wrong while deleting the recipe ingredient."
+        : "Something went wrong while deleting the recipe ingredient.",
+    })
+
+    await requestPromise
+
+    return {
+      success: true,
+      intent: "delete_recipe_ingredient",
+    }
+  } catch {
+    return {
+      success: false,
+      intent: "delete_recipe_ingredient",
+    }
+  }
 }
 
 export default function BuildRecipeRoute({ loaderData } : Route.ComponentProps){
-    return <BuildRecipe recipe_details={loaderData?.recipeDetails} categories_data={loaderData?.categories || []}/>
+    return <BuildRecipe recipe_details={loaderData?.recipeDetails} categories_data={loaderData?.categories || []} ingredient_data={loaderData?.ingredient_stocks || []}/>
 }

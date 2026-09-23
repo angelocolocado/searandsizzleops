@@ -49,6 +49,33 @@ export async function clientAction({ request } : Route.ClientActionArgs){
 
   if(data.intent === "setup_recipe") return await handleSetupRecipe(data)
   else if(data.intent === "edit_recipe") return await handleUpdateRecipe(data)
+  else if(data.intent === "delete_recipe") return await handleDeleteRecipe(data)
+}
+
+async function handleDeleteRecipe(data: any){
+  try{
+    const requestPromise = api.delete(`v1/recipes/${data.id}`)
+
+    toast.promise(requestPromise, {
+      loading: "Deleting Recipe...",
+      success: "Recipe deleted successfully!",
+      error: (err) => isAxiosError(err)
+        ? err.response?.data?.message || "Something went wrong while deleting the recipe."
+        : "Something went wrong while deleting the recipe.",
+    })
+
+    await requestPromise
+
+    return {
+      success: true,
+      intent: "delete_recipe",
+    }
+  } catch {
+    return {
+      success: false,
+      intent: "delete_recipe",
+    }
+  }
 }
 
 async function handleUpdateRecipe(data: any){
@@ -58,6 +85,7 @@ async function handleUpdateRecipe(data: any){
 
     toast.promise(requestPromise, {
       loading: "Updating Recipe...",
+      success: "Recipe updated!",
       error: (err) => {
         if(isAxiosError(err)){
           return err.response?.data?.message || "Something went wrong, Please try again later."
