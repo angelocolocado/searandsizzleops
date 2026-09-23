@@ -1,7 +1,7 @@
 
 import { useCallback, useState } from "react"
 import { useRevalidator } from "react-router"
-import type { CategoryDataType } from "../../categories-manager"
+import type { CategoryDataType } from "~/components/ui/categories-manager"
 import { BuildRecipeHeader, type RecipeDetailsType } from "./header"
 import { BuildRecipeFooter } from "./footer"
 import { BuildRecipeWindow } from "./build-recipe-window"

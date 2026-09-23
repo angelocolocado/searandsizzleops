@@ -1,7 +1,7 @@
 import { createColumns } from "./columns"
 import { DataTable } from "./data-table"
 import type { IngredientDataType } from "./columns"
-import type { CategoryDataType } from "../categories-manager"
+import type { CategoryDataType } from "~/components/ui/categories-manager"
 
 type ComponentProps = {
   onEditItem: (item: IngredientDataType) => void

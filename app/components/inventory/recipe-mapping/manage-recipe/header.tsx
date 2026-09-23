@@ -4,7 +4,7 @@ import { Dialog } from "~/components/ui/dialog"
 import { SetupRecipeDialog } from "../setup-dialog"
 import { CalendarDays, Clock3, FileText, Pencil, Tag } from "lucide-react"
 import { useState } from "react"
-import type { CategoryDataType } from "../../categories-manager"
+import type { CategoryDataType } from "~/components/ui/categories-manager"
 import { PublishRecipeUI } from "./publish-recipe"
 
 export type RecipeIngredientType = {

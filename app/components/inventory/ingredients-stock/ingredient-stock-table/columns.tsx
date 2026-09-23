@@ -14,7 +14,7 @@ import {
 } from "~/components/ui/select"
 
 import { type DataTableFeatures } from "./data-table-features"
-import type { CategoryDataType } from "../categories-manager"
+import type { CategoryDataType } from "~/components/ui/categories-manager"
 import { unitOptions } from "../add-update-drawer"
 
 

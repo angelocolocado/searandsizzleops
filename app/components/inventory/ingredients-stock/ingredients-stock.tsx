@@ -6,9 +6,8 @@ import { Kpi } from "./kpi"
 import { AddUpdateDrawer } from "./add-update-drawer"
 import { Drawer } from "~/components/ui/drawer"
 import { useIsMobile } from "~/hooks/use-mobile"
-import { CategoriesManager } from "../categories-manager"
+import { CategoriesManager, type CategoryDataType } from "~/components/ui/categories-manager"
 import type { IngredientDataType } from "./ingredient-stock-table/columns"
-import { type CategoryDataType } from "../categories-manager"
 import { DataNav } from "../data-nav"
 
 type DrawerMode = "create" | "update"
@@ -68,7 +67,7 @@ export function IngredientsStock({ categories_data, ingredients_data } : Compone
             </section>
           </div>
 
-          <CategoriesManager from="ingredient-stock" categories_data={categories_data} />
+          <CategoriesManager from="ingredient-stock" actionPath="/inventory/categories" title="Ingredients Category" categories_data={categories_data} />
           <AddUpdateDrawer
             categories={categories_data}
             open={drawerState.open}

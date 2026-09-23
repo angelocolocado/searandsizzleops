@@ -37,7 +37,7 @@ import {
 
 import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
-import type { CategoryDataType } from "../categories-manager"
+import type { CategoryDataType } from "~/components/ui/categories-manager"
 import { Plus } from "lucide-react"
 import { useFetcher, useNavigate } from "react-router"
 import { Spinner } from "~/components/ui/spinner"

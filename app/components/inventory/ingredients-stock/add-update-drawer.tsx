@@ -42,7 +42,7 @@ import {
 import {
   type IngredientDataType,
 } from "./ingredient-stock-table/columns"
-import type { CategoryDataType } from "./categories-manager"
+import type { CategoryDataType } from "~/components/ui/categories-manager"
 import { Spinner } from "~/components/ui/spinner"
 import { id } from "zod/v4/locales"
 

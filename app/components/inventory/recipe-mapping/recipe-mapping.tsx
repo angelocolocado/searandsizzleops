@@ -2,9 +2,8 @@
 
 import { Drawer } from "~/components/ui/drawer"
 import { useIsMobile } from "~/hooks/use-mobile"
-import { CategoriesManager } from "../categories-manager"
+import { CategoriesManager, type CategoryDataType } from "~/components/ui/categories-manager"
 import { DataNav } from "../data-nav"
-import type { CategoryDataType } from "../categories-manager"
 import { useNavigate } from "react-router"
 import { RecipeSection } from "./recipe-section"
 import {
@@ -55,7 +54,7 @@ export function RecipeMapping({ categories_data, recipes_data } : ComponentProps
             </section>
           </div>
 
-          <CategoriesManager from="recipe-mapping" categories_data={categories_data} />
+          <CategoriesManager from="recipe-mapping" actionPath="/inventory/categories" title="Recipes Category" categories_data={categories_data} />
           <SetupRecipeDialog categories_data={categories_data} />
           
         </Dialog>

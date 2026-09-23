@@ -1,5 +1,5 @@
 import BuildRecipe from "~/components/inventory/recipe-mapping/manage-recipe/build-recipe";
-import type { CategoryDataType } from "~/components/inventory/categories-manager";
+import type { CategoryDataType } from "~/components/ui/categories-manager";
 import type { Route } from "./+types/build-recipe";
 import api from "~/lib/axios";
 import { toast } from "sonner";

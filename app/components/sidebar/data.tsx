@@ -50,7 +50,7 @@ export const navItems = {
   pos: [
     {
       title: "Menu",
-      url: "/inventory/recipes/:id",
+      url: "/pos/menu",
       icon: Utensils,
       breadcrumbs: [
         { label: "Inventory Management", url: "#" },
