@@ -1,0 +1,9 @@
+{
+  "short_name": "POS",
+  "name": "Searen Sizzle POS",
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "display": "fullscreen",
+  "orientation": "landscape"
+}
