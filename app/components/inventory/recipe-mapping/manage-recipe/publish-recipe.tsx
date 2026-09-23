@@ -11,6 +11,7 @@ import {
     DialogTitle,
 } from "~/components/ui/dialog";
 import { useState } from "react";
+import { useEffect } from "react";
 
 type ComponentProps = {
     recipe_status: string
@@ -18,11 +19,19 @@ type ComponentProps = {
 
 export function PublishRecipeUI({ recipe_status } : ComponentProps){
     const [isUnavailableOpen, setIsUnavailableOpen] = useState(false)
+    const normalizedStatus = recipe_status.trim().toLowerCase()
+    const canMarkAsAvailable = ["inactive", "unavailable", "incomplete"].includes(normalizedStatus)
+
+    useEffect(() => {
+        if (canMarkAsAvailable) {
+            setIsUnavailableOpen(false)
+        }
+    }, [canMarkAsAvailable])
 
     
     return (<>
 
-        {(recipe_status.toLowerCase() == "inactive" || recipe_status.toLowerCase() == "unavailable") ? <>
+        {canMarkAsAvailable ? <>
         
         <Form method="POST" className="flex items-center">
             <Button type="submit" size="xs" className="rounded-xl"><CheckLine /> Mark as Available</Button>
@@ -59,7 +68,11 @@ export function PublishRecipeUI({ recipe_status } : ComponentProps){
 
                     <DialogFooter>
                         <DialogClose render={<Button type="button" size="sm">Cancel</Button>} />
-                        <Form method="POST" className="flex">
+                        <Form
+                            method="POST"
+                            className="flex"
+                            onSubmit={() => setIsUnavailableOpen(false)}
+                        >
                             <Button type="submit" size="sm" variant="destructive">
                                 <OctagonMinus />
                                 Mark as Unavailable

@@ -30,6 +30,7 @@ type ComponentProps = {
     recipe_id?: string
     ingredient_data: IngredientDataType[]
     recipe_ingredients: RecipeIngredientType[]
+    isActive: boolean
 }
 
 const unitOptions = ["pcs", "kg", "g", "lb", "oz", "L", "mL"] as const
@@ -62,7 +63,7 @@ const formatDate = (date?: string) => {
     })
 }
 
-export function BuildRecipeWindow({ recipe_id, ingredient_data, recipe_ingredients } : ComponentProps){
+export function BuildRecipeWindow({ isActive, recipe_id, ingredient_data, recipe_ingredients } : ComponentProps){
     const fetcher = useFetcher()
     const { revalidate } = useRevalidator()
     const [editingId, setEditingId] = useState<string | null>(null)
@@ -102,6 +103,8 @@ export function BuildRecipeWindow({ recipe_id, ingredient_data, recipe_ingredien
     }
 
     const handleEdit = (ingredient: RecipeIngredientType) => {
+        if (isActive) return
+
         const stockIngredient = ingredient_data.find(
             (stock) => stock.item_name === ingredient.recipe_name
         )
@@ -131,6 +134,8 @@ export function BuildRecipeWindow({ recipe_id, ingredient_data, recipe_ingredien
     }
 
     const onSubmit = (data: FormSchemaType) => {
+        if (isActive) return
+
         const { ingredient_name, ...ingredientData } = data
 
         fetcher.submit(
@@ -200,6 +205,7 @@ export function BuildRecipeWindow({ recipe_id, ingredient_data, recipe_ingredien
                                             size="icon-xs"
                                             title="Update ingredient"
                                             aria-label={`Update ${ingredient.recipe_name}`}
+                                            disabled={isActive || isSubmitting}
                                             onClick={() => handleEdit(ingredient)}
                                         >
                                             <Pencil />
@@ -248,13 +254,15 @@ export function BuildRecipeWindow({ recipe_id, ingredient_data, recipe_ingredien
                         <p className="mt-1 text-xs text-muted-foreground">
                             {editingId
                                 ? "Update the quantity or unit, then save the ingredient changes."
-                                : "Add ingredients individually with the quantity used for one recipe output."}
+                                : isActive
+                                    ? "This recipe is available in POS. Ingredient changes are locked until it is unavailable."
+                                    : "Add ingredients individually with the quantity used for one recipe output."}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <FieldSet disabled={isSubmitting || !recipe_id} className="px-5 py-5 sm:px-7">
+            <FieldSet disabled={isActive || isSubmitting || !recipe_id} className="px-5 py-5 sm:px-7">
                 <fetcher.Form id="add_recipe_ingredient" onSubmit={handleSubmit(onSubmit)}>
                     <input type="hidden" {...register("recipe_id")} />
                     <FieldGroup>

@@ -9,7 +9,7 @@ import {
 
 import { NavLink, useLocation } from "react-router"
 
-type InventoryNavItem = {
+type NavItem = {
     title: string,
     url: string,
     isHidden?: boolean,
@@ -17,18 +17,19 @@ type InventoryNavItem = {
 }
 
 type ComponentProps = {
-    inventoryNav: InventoryNavItem[]
+    nav_items: NavItem[]
+    title: string
 }
 
-export function InventorySidebar({ inventoryNav } : ComponentProps) {
+export function SidebarNavigations({ nav_items, title } : ComponentProps) {
     const location = useLocation() // Kukunin ang kasalukuyang pathname
 
     return (
         <SidebarGroup>
-          <SidebarGroupLabel>Inventory Management</SidebarGroupLabel>
+          <SidebarGroupLabel>{title}</SidebarGroupLabel>
           <SidebarGroupContent>
               <SidebarMenu>
-              {inventoryNav.filter((item) => !item.isHidden).map((item) => {
+              {nav_items.filter((item) => !item.isHidden).map((item) => {
                 const isActive = location.pathname === item.url
 
                   return (

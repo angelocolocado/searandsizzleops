@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
-import { InventorySidebar } from "./inventory"
+import { SidebarNavigations } from "./inventory"
 import { navItems } from "./data"
 
 export function AppSidebar() {
@@ -32,7 +32,9 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
 
-        <InventorySidebar inventoryNav={navItems.inventory} />
+        <SidebarNavigations title="Inventory Management" nav_items={navItems.inventory}  />
+        <SidebarNavigations title="Point of Sale Management" nav_items={navItems.pos}  />
+        <SidebarNavigations title="Marketing / Promotions" nav_items={navItems.marketing}  />
 
       </SidebarContent>
       <SidebarFooter />

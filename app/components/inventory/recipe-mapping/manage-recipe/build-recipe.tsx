@@ -32,6 +32,7 @@ export default function BuildRecipe({ recipe_details, categories_data, ingredien
                 recipe_id={recipe_details?.recipe_id}
                 ingredient_data={ingredient_data}
                 recipe_ingredients={recipe_details?.recipe_ingredients || []}
+                isActive={String(recipe_details?.status).toLowerCase() === "available"}
             />
 
             <BuildRecipeFooter
