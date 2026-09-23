@@ -15,8 +15,6 @@ type ComponentProps = {
 
 export function Kpi({ ingredients_data } : ComponentProps){
 
-    console.log(ingredients_data)
-
     const criticalStock = ingredients_data.filter((ing) => ing.quantity < ing.reorder_level).length;
     const lowStock = ingredients_data.filter((ing) => ing.quantity >= ing.reorder_level && ing.quantity < ing.reorder_level + 6).length;
     const healthyStock = ingredients_data.filter((ing) => ing.quantity >= ing.reorder_level + 6).length;
