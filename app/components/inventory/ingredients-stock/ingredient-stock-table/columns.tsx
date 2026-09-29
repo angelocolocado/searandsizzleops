@@ -27,6 +27,7 @@ export type IngredientDataType = {
   updated_at: string
   reorder_level: number
   unit: string
+  unit_cost?: number
 }
 
 const getStockStatus = (

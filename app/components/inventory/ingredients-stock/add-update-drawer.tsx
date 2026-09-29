@@ -69,6 +69,9 @@ const ingredientSchema = z.object({
   reorder_level: z.string().trim().refine((value) => value === "" || Number(value) >= 0, {
     message: "Reorder level cannot be negative.",
   }),
+  unit_cost: z.string().trim().refine((value) => Number.isFinite(Number(value)) && Number(value) >= 0, {
+    message: "Unit cost cannot be negative.",
+  }),
   notes: z.string().max(250, "Notes must be under 250 characters.").optional().or(z.literal("")),
 })
 
@@ -80,6 +83,7 @@ const defaultValues: IngredientFormValues = {
   quantity: "",
   unit: "pcs",
   reorder_level: "",
+  unit_cost: "0",
   notes: "",
 }
 
@@ -123,6 +127,7 @@ export function AddUpdateDrawer({
             quantity: String(item.quantity),
             unit: "pcs",
             reorder_level: "",
+            unit_cost: String(item.unit_cost ?? 0),
             notes: "",
           }
         : {}),
@@ -158,6 +163,7 @@ export function AddUpdateDrawer({
             quantity: String(item.quantity),
             unit: normalizeUnit(item.unit),
             reorder_level: String(item.reorder_level),
+            unit_cost: String(item.unit_cost ?? 0),
             notes: "",
           }
         : {}),
@@ -177,9 +183,10 @@ export function AddUpdateDrawer({
 
     const payload = {
       ...values,
-      category: selectedCategory?.id,
+      category: selectedCategory?.id ?? null,
       quantity: parsedQuantity,
       reorder_level: parsedreorder_level,
+      unit_cost: Number(values.unit_cost),
       intent: isCreate ? "POST" : "UPDATE",
       id: item?.id || null
     }
@@ -342,15 +349,20 @@ export function AddUpdateDrawer({
 
                 <Field>
                   <FieldContent>
-                    <FieldLabel htmlFor="quantity-preview">Current stock</FieldLabel>
+                    <FieldLabel htmlFor="unit_cost">Unit cost</FieldLabel>
                     <InputGroup>
+                      <InputGroupAddon align="inline-start">$</InputGroupAddon>
                       <InputGroupInput
-                        id="quantity-preview"
-                        value={quantityValue ? `${quantityValue} ${watch("unit")}` : "0 pcs"}
-                        readOnly
-                        className="cursor-default text-muted-foreground"
+                        id="unit_cost"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        aria-invalid={Boolean(errors.unit_cost)}
+                        {...register("unit_cost")}
                       />
                     </InputGroup>
+                    <FieldError errors={[errors.unit_cost]} />
                   </FieldContent>
                 </Field>
               </div>
