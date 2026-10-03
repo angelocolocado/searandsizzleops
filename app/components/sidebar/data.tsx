@@ -53,7 +53,7 @@ export const navItems = {
       url: "/pos/menu",
       icon: Utensils,
       breadcrumbs: [
-        { label: "Inventory Management", url: "#" },
+        { label: "Point of Sale Management", url: "#" },
         { label: "Recipe Mapping", url: "/inventory/recipes" },
         { label: "Build Recipe", url: "#" },
       ],

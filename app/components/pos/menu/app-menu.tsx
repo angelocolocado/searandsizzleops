@@ -4,7 +4,7 @@ import { CategoriesManager, type CategoryDataType } from "~/components/ui/catego
 import { InputGroup, InputGroupAddon, InputGroupInput } from "~/components/ui/input-group"
 import { Button } from "~/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
-import { Plus, Search } from "lucide-react"
+import { Plus, Search, Utensils } from "lucide-react"
 import { MenuAddMenuPane } from "./menu-add-menu-pane"
 import { MenuListSection, type MenuListItem } from "./menu-list-section"
 
@@ -23,6 +23,19 @@ export default function AppMenu({ categories_data, available_recipes, menu_list 
 
     return (
         <main className="animate-in fade-in duration-500 ease-out px-5 py-4 scroll-smooth">
+            <header className="mb-5 flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
+                        <Utensils className="size-3.5" /> Point of sale setup
+                    </p>
+                    <h1 className="text-2xl font-semibold tracking-tight">Menu management</h1>
+                    <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Configure restaurant menu items, categories, and the recipes behind each dish.</p>
+                </div>
+                <div className="flex gap-5 text-xs sm:border-l sm:pl-5">
+                    <div><p className="text-lg font-semibold tabular-nums text-foreground">{menu_list.length}</p><p className="text-muted-foreground">Menu items</p></div>
+                    <div><p className="text-lg font-semibold tabular-nums text-foreground">{categories_data.length}</p><p className="text-muted-foreground">Categories</p></div>
+                </div>
+            </header>
             <section className="min-h-[60vh] overflow-hidden rounded-2xl border bg-card shadow-sm">
                 <div className="flex flex-col gap-3 border-b bg-muted/30 p-3 lg:flex-row lg:items-center lg:justify-between">
                     <InputGroup className="max-w-md">

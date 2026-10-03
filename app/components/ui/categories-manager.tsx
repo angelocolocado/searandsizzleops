@@ -46,6 +46,7 @@ export function CategoriesManager({ categories_data, from, actionPath, title } :
     const isSubmitting = fetcher.state !== "idle"
     const [isCatInUseErr, setIsCatInUseErr] = useState(false)
     const [itemCount, setItemCount] = useState(0)
+    const [deleteTarget, setDeleteTarget] = useState<CategoryDataType | null>(null)
 
     const {register, handleSubmit, formState: { errors }, reset} = useForm<AddCatSchemaType>({
         resolver: zodResolver(addCatSchema),
@@ -63,8 +64,13 @@ export function CategoriesManager({ categories_data, from, actionPath, title } :
         reset()
     }
 
-    const handleRemove = (categoryId: number) => {
-        fetcher.submit({ intent: "delete", where: from, id: String(categoryId) }, {
+    const handleRemove = (category: CategoryDataType) => {
+        setDeleteTarget(category)
+    }
+
+    const confirmRemove = () => {
+        if (!deleteTarget) return
+        fetcher.submit({ intent: "delete", where: from, id: String(deleteTarget.id) }, {
             method: "POST", action: actionPath
         })
     }
@@ -91,19 +97,23 @@ export function CategoriesManager({ categories_data, from, actionPath, title } :
     }
 
     useEffect(() => {
-        if(fetcher.state === "idle" && fetcher.data?.intent === "delete" && !fetcher.data?.success){
+        if (fetcher.state !== "idle" || fetcher.data?.intent !== "delete") return
+
+        if (fetcher.data?.success) {
+            setDeleteTarget(null)
+        } else {
             setItemCount(fetcher.data.itemCount ?? 0)
             setIsCatInUseErr(true)
         }
     }, [fetcher.state, fetcher.data])
 
     return (
-        <main className="animate-in fade-in duration-500 ease-out py-5 scroll-smooth" id="categories-manager">
+        <section className="animate-in fade-in duration-500 ease-out py-5 scroll-smooth" id="categories-manager">
             <div className="mx-auto space-y-6">
                 <div className="flex items-center justify-between gap-3">
                     <div>
                         <p className="text-sm font-medium hidden text-muted-foreground">Inventory</p>
-                        <h1 className="text-2xl font-semibold tracking-tight">{title || "Categories"}</h1>
+                        <h2 className="text-2xl font-semibold tracking-tight">{title || "Categories"}</h2>
                     </div>
                 </div>
 
@@ -146,7 +156,7 @@ export function CategoriesManager({ categories_data, from, actionPath, title } :
                                         </div> : <span className="truncate pr-3 text-sm font-medium">{category.category}</span>}
                                         {!isEditing && <div>
                                             <Button type="button" variant="ghost" size="icon" className="size-8 text-muted-foreground" onClick={() => handleUpdate(category)}><SquarePen className="size-4" /></Button>
-                                            <Button type="button" variant="ghost" size="icon" className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" onClick={() => handleRemove(category.id)}><Trash2 className="size-4" /></Button>
+                                            <Button type="button" variant="ghost" size="icon" className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" aria-label={`Delete ${category.category}`} onClick={() => handleRemove(category)}><Trash2 className="size-4" /></Button>
                                         </div>}
                                     </div>
                                 })}
@@ -162,7 +172,7 @@ export function CategoriesManager({ categories_data, from, actionPath, title } :
                                         </div> : <span className="line-clamp-2 text-sm font-medium">{category.category}</span>}
                                         {!isEditing && <div className="mt-2 flex justify-end">
                                             <Button type="button" variant="ghost" size="icon" className="size-8 text-muted-foreground" onClick={() => handleUpdate(category)}><SquarePen className="size-4" /></Button>
-                                            <Button type="button" variant="ghost" size="icon" className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" onClick={() => handleRemove(category.id)}><Trash2 className="size-4" /></Button>
+                                            <Button type="button" variant="ghost" size="icon" className="size-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" aria-label={`Delete ${category.category}`} onClick={() => handleRemove(category)}><Trash2 className="size-4" /></Button>
                                         </div>}
                                     </div>
                                 })}
@@ -172,15 +182,35 @@ export function CategoriesManager({ categories_data, from, actionPath, title } :
                 </div>
             </div>
 
+            <Dialog open={Boolean(deleteTarget)} onOpenChange={(open) => { if (!open) setDeleteTarget(null) }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete category?</DialogTitle>
+                        <DialogDescription>
+                            Delete “{deleteTarget?.category}”? This category will be removed from the list and cannot be restored.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <DialogClose render={<Button type="button" variant="ghost" disabled={isSubmitting}>Cancel</Button>} />
+                        <Button type="button" variant="destructive" onClick={confirmRemove} disabled={!deleteTarget || isSubmitting}>
+                            {isSubmitting ? "Deleting..." : "Delete category"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             <Dialog open={isCatInUseErr} onOpenChange={setIsCatInUseErr}>
                 <DialogContent showCloseButton={false}>
                     <DialogHeader>
                         <DialogTitle>Cannot delete category</DialogTitle>
-                        <DialogDescription>This category cannot be deleted because it is currently being used by <span className="font-semibold">{itemCount}</span> {itemCount === 1 ? "ingredient" : "ingredients"}.</DialogDescription>
+                        <DialogDescription>
+                            This category is still used by <span className="font-semibold">{itemCount}</span>{" "}
+                            {from === "ingredient-stock" ? (itemCount === 1 ? "ingredient." : "ingredients.") : from === "recipe-mapping" ? (itemCount === 1 ? "recipe." : "recipes.") : (itemCount === 1 ? "menu item." : "menu items.")}
+                        </DialogDescription>
                     </DialogHeader>
                     <DialogFooter><DialogClose render={<Button>Continue</Button>} /></DialogFooter>
                 </DialogContent>
             </Dialog>
-        </main>
+        </section>
     )
 }

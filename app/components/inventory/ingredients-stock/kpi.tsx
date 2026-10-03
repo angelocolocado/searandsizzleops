@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { CirclePile, Plus } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import type { IngredientDataType } from "./ingredient-stock-table/columns";
 
@@ -28,10 +28,12 @@ export function Kpi({ ingredients_data } : ComponentProps){
 
     return (<>
     
-        <section className="rounded-2xl border bg-card shadow-sm">
-            <div className="flex flex-col gap-4 border-b px-5 py-4 md:flex-row md:items-center md:justify-between">
+        <section className="">
+            <div className="flex flex-col gap-4 pb-5 md:flex-row md:items-center md:justify-between">
                 <div>
-                <p className="text-sm font-medium text-muted-foreground">Inventory Overview</p>
+                <p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
+                    <CirclePile className="size-3.5" /> Inventory management
+                </p>
                 <h1 className="text-2xl font-semibold tracking-tight text-foreground">Ingredient stock</h1>
                 </div>
                 <Button hidden disabled className="gap-2" size="sm">
@@ -40,7 +42,7 @@ export function Kpi({ ingredients_data } : ComponentProps){
                 </Button>
             </div>
 
-            <div className="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 {stockKpis.map((kpi) => (
                 <div key={kpi.label} className="rounded-xl border bg-background/60 p-4">
                     <div className="mb-3 flex items-center justify-between gap-3">

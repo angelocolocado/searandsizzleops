@@ -134,6 +134,7 @@ export function MenuListSection({
                     variant="link"
                     size="xs"
                     className="pl-0"
+                    nativeButton={false}
                     disabled={menu.id === undefined || menu.id === null}
                     render={<Link to={`/pos/menu/${menu.id}`} />}
                     >

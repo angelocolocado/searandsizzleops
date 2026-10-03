@@ -6,13 +6,14 @@ import { MenuDetailPage } from "~/components/pos/menu/menu-detail/menu-detail-pa
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   if (!params.id) {
-    return { menu: null, recipes: [], modifiers: [] }
+    return { menu: null, recipes: [], modifiers: [], assignments: [] }
   }
 
-  const [menuResult, recipesResult, modifiersResult] = await Promise.all([
+  const [menuResult, recipesResult, modifiersResult, assignmentsResult] = await Promise.all([
     api.get(`v1/menus/${params.id}`).then((response) => response.data).catch(() => null),
     api.get("v1/recipes?status=available").then((response) => response.data).catch(() => []),
     api.get("v1/modifiers").then((response) => response.data).catch(() => []),
+    api.get("v1/menu-modifiers").then((response) => response.data).catch(() => []),
   ])
 
   const menu = menuResult?.data ?? menuResult?.menu ?? menuResult
@@ -21,6 +22,7 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
     menu: menu && !Array.isArray(menu) ? menu : null,
     recipes: Array.isArray(recipesResult) ? recipesResult : [],
     modifiers: Array.isArray(modifiersResult) ? modifiersResult : [],
+    assignments: Array.isArray(assignmentsResult) ? assignmentsResult : [],
   }
 }
 
@@ -71,12 +73,12 @@ export async function clientAction({ request, params }: Route.ClientActionArgs) 
         successMessage = "Menu availability updated."
         break
       case "add_modifier":
-        requestPromise = api.post(`v1/menus/${menuId}/modifiers`, { modifier_id: formData.modifier_id })
+        requestPromise = api.post("v1/menu-modifiers", { menu_id: menuId, modifier_id: formData.modifier_id })
         loadingMessage = "Adding modifier..."
         successMessage = "Modifier added."
         break
       case "remove_modifier":
-        requestPromise = api.delete(`v1/menus/${menuId}/modifiers/${formData.modifier_id}`)
+        requestPromise = api.delete(`v1/menu-modifiers/${formData.assignment_id}`)
         loadingMessage = "Removing modifier..."
         successMessage = "Modifier removed."
         break
@@ -117,6 +119,7 @@ export default function MenuDetailRoute({ loaderData, params }: Route.ComponentP
       menu={loaderData.menu}
       recipes={loaderData.recipes}
       modifiers={loaderData.modifiers}
+      assignments={loaderData.assignments}
       menuId={params.id}
     />
   )

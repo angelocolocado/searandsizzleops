@@ -2,7 +2,7 @@ import { ArrowLeft, CalendarDays, Clock3, Utensils } from "lucide-react"
 import { Link } from "react-router"
 import { Button } from "~/components/ui/button"
 import { MenuDangerZone } from "./menu-danger-zone"
-import { MenuModifiersSection, type MenuModifier } from "./menu-modifiers-section"
+import { MenuModifiersSection, type MenuModifier, type MenuModifierAssignment } from "./menu-modifiers-section"
 import { MenuCostsSection, type MenuCostsBreakdown } from "./menu-costs-section"
 import { MenuEditDialog } from "./menu-edit-dialog"
 import { MenuSellingPriceSection } from "./menu-profit-section"
@@ -30,14 +30,15 @@ type ComponentProps = {
   menu: MenuDetail | null
   recipes: MenuRecipe[]
   modifiers: MenuModifier[]
+  assignments: MenuModifierAssignment[]
   menuId: string
 }
 
-export function MenuDetailPage({ menu, recipes, modifiers, menuId }: ComponentProps) {
+export function MenuDetailPage({ menu, recipes, modifiers, assignments, menuId }: ComponentProps) {
   if (!menu) {
     return (
       <main className="px-5 py-6">
-        <Button variant="ghost" size="sm" className="mb-6" render={<Link to="/pos/menu" />}>
+        <Button variant="ghost" size="sm" className="mb-6" nativeButton={false} render={<Link to="/pos/menu" />}>
           <ArrowLeft /> Back to menus
         </Button>
         <section className="rounded-xl border bg-card px-5 py-12 text-center">
@@ -63,7 +64,7 @@ export function MenuDetailPage({ menu, recipes, modifiers, menuId }: ComponentPr
   return (
     <main className="animate-in fade-in duration-500 space-y-5 px-5 py-5">
       <header className="space-y-4">
-        <Button variant="ghost" size="sm" className="-ml-2" render={<Link to="/pos/menu" />}>
+        <Button variant="ghost" size="sm" className="-ml-2" nativeButton={false} render={<Link to="/pos/menu" />}>
           <ArrowLeft /> Back to menus
         </Button>
         <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
@@ -95,8 +96,10 @@ export function MenuDetailPage({ menu, recipes, modifiers, menuId }: ComponentPr
           />
           <MenuModifiersSection
             menuId={menuId}
+            menuStatus={menu.status}
             availableModifiers={modifiers}
             assignedModifiers={assignedModifiers}
+            assignments={assignments}
           />
         </div>
         <div className="space-y-5">
