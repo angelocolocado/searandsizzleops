@@ -11,6 +11,7 @@ export default [
 
         route("/pos/menu", "routes/pos/menu/menu.tsx"),
         route("/pos/menu/:id", "routes/pos/menu/menu-detail.tsx"),
+        route("/pos/modifiers", "routes/pos/modifiers.tsx"),
     ]),
     route("/categories", "routes/category-manager.tsx"),
     

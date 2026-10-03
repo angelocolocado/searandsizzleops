@@ -60,12 +60,11 @@ export const navItems = {
     },
     {
       title: "Modifiers",
-      url: "/inventory/recipes/:id",
+      url: "/pos/modifiers",
       icon: Barrel,
       breadcrumbs: [
-        { label: "Inventory Management", url: "#" },
-        { label: "Recipe Mapping", url: "/inventory/recipes" },
-        { label: "Build Recipe", url: "#" },
+        { label: "Point of Sale Management", url: "#" },
+        { label: "Modifiers", url: "/pos/modifiers" },
       ],
     },
     {
