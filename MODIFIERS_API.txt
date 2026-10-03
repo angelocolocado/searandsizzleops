@@ -1,0 +1,198 @@
+MODIFIER API QUICK GUIDE
+========================
+
+Base path: /api/v1
+Authentication: These modifier routes currently do not require authentication.
+
+BASIC WORKFLOW
+--------------
+1. Create a modifier category.
+2. Create a modifier in that category. A recipe link is optional.
+3. Assign the modifier to one or more menus.
+4. Read the menu to see its modifier options.
+
+MODIFIER CATEGORIES
+-------------------
+GET    /modifier-categories
+       List modifier categories.
+
+POST   /modifier-categories
+       Create a category.
+       Required JSON: {"category": "Toppings"}
+
+GET    /modifier-categories/{modifier_category}
+       Get one category and its modifiers. The path value is the category's integer ID.
+
+PUT    /modifier-categories/{modifier_category}
+PATCH  /modifier-categories/{modifier_category}
+       Rename a category. Required JSON: {"category": "Sides"}
+
+DELETE /modifier-categories/{modifier_category}
+       Delete an unused category. Returns 409 if modifiers still use it.
+
+MODIFIERS
+---------
+GET    /modifiers
+       List modifiers, including category and recipe details.
+
+POST   /modifiers
+       Create a modifier.
+       Required fields:
+         category_id  Integer ID of a modifier category.
+         name         Unique modifier name.
+         price        Number, zero or greater, up to two decimal places.
+       Optional fields:
+         recipe_id    Existing recipe UUID, or null for a standalone modifier.
+         description  Text, or null.
+
+       Example:
+       {
+         "category_id": 4,
+         "recipe_id": null,
+         "name": "Extra Cheese",
+         "price": 1.50,
+         "description": "A cheese topping"
+       }
+
+GET    /modifiers/{modifier}
+       Get one modifier. The path value is the modifier UUID.
+
+PUT    /modifiers/{modifier}
+PATCH  /modifiers/{modifier}
+       Update a modifier. Send only the fields to change. Field rules match create.
+
+DELETE /modifiers/{modifier}
+       Delete a modifier. The path value is the modifier UUID.
+
+MENU ASSIGNMENTS
+----------------
+GET    /menu-modifiers
+       List menu-to-modifier assignments.
+
+POST   /menu-modifiers
+       Assign a modifier to a menu. Both values are UUIDs.
+       Required JSON: {"menu_id": "MENU-UUID", "modifier_id": "MODIFIER-UUID"}
+       The same modifier cannot be assigned to the same menu twice.
+       Returns 409 if the menu is Available.
+       The response includes the new assignment's UUID.
+
+GET    /menu-modifiers/{menu_modifier}
+       Get an assignment by its assignment UUID (not the modifier UUID).
+
+DELETE /menu-modifiers/{menu_modifier}
+       Remove an assignment using its assignment UUID.
+       Returns 409 if the menu is Available.
+
+MENU DISPLAY
+------------
+GET    /menus
+GET    /menus/{menu}
+       Menu responses include the assigned options in the "modifiers" array.
+
+GET RESPONSE EXAMPLES
+---------------------
+GET /modifier-categories returns an array:
+
+[
+       {
+              "id": 4,
+              "category": "Toppings",
+              "type": 4,
+              "created_at": "2026-10-03T10:00:00.000000Z",
+              "updated_at": "2026-10-03T10:00:00.000000Z"
+       }
+]
+
+GET /modifier-categories/{modifier_category} returns one category object and
+includes its "modifiers" array:
+
+{
+       "id": 4,
+       "category": "Toppings",
+       "type": 4,
+       "modifiers": [
+              {
+                     "id": "MODIFIER-UUID",
+                     "category_id": 4,
+                     "recipe_id": null,
+                     "name": "Extra Cheese",
+                     "price": "1.50",
+                     "description": "A cheese topping"
+              }
+       ]
+}
+
+GET /modifiers returns an array; GET /modifiers/{modifier} returns one object.
+The category and recipe values are included because these endpoints load them.
+
+[
+       {
+              "id": "MODIFIER-UUID",
+              "category_id": 4,
+              "category": "Toppings",
+              "recipe_id": null,
+              "recipe": null,
+              "name": "Extra Cheese",
+              "price": 1.5,
+              "description": "A cheese topping",
+              "created_at": "2026-10-03T10:00:00.000000Z",
+              "updated_at": "2026-10-03T10:00:00.000000Z"
+       }
+]
+
+GET /menu-modifiers returns an array; GET /menu-modifiers/{menu_modifier}
+returns one assignment. Its "id" is the assignment UUID used for DELETE.
+
+[
+       {
+              "id": "ASSIGNMENT-UUID",
+              "menu_id": "MENU-UUID",
+              "modifier_id": "MODIFIER-UUID",
+              "modifier": {
+                     "id": "MODIFIER-UUID",
+                     "category_id": 4,
+                     "category": "Toppings",
+                     "recipe_id": null,
+                     "recipe": null,
+                     "name": "Extra Cheese",
+                     "price": 1.5,
+                     "description": "A cheese topping",
+                     "created_at": "2026-10-03T10:00:00.000000Z",
+                     "updated_at": "2026-10-03T10:00:00.000000Z"
+              },
+              "created_at": "2026-10-03T10:00:00.000000Z"
+       }
+]
+
+GET /menus and GET /menus/{menu} include the menu's assigned modifiers. The
+following shows the relevant portion of a menu response; other menu fields are
+also returned.
+
+{
+       "id": "MENU-UUID",
+       "name": "Burger",
+       "modifiers": [
+              {
+                     "id": "MODIFIER-UUID",
+                     "category_id": 4,
+                     "category": "Toppings",
+                     "recipe_id": null,
+                     "recipe": null,
+                     "name": "Extra Cheese",
+                     "price": 1.5,
+                     "description": "A cheese topping",
+                     "created_at": "2026-10-03T10:00:00.000000Z",
+                     "updated_at": "2026-10-03T10:00:00.000000Z"
+              }
+       ]
+}
+
+NOTES
+-----
+- Category names and modifier names must be unique.
+- A modifier category_id must refer to a modifier category, not an ingredient,
+  recipe, or menu category.
+- A recipe-linked modifier becomes standalone if its recipe is deleted.
+- Modifier configuration is menu-level. Saving a cashier's modifier selections
+  on an individual order is not supported until order/order-line endpoints exist.
+- These routes are not protected by auth:sanctum yet.

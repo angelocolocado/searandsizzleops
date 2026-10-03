@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFetcher, useRevalidator } from "react-router"
 import z from "zod"
-import { Check, ChevronRight, Clock3, Pencil, PackagePlus, Trash2, X } from "lucide-react"
+import { Check, ChevronRight, Clock3, Pencil, Blender, Trash2, X } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import {
     Field,
@@ -245,7 +245,7 @@ export function BuildRecipeWindow({ isActive, recipe_id, ingredient_data, recipe
             <div className="border-b bg-muted/20 px-5 py-4 sm:px-7">
                 <div className="flex items-start gap-3">
                     <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                        <PackagePlus className="size-4" />
+                        <Blender className="size-4" />
                     </div>
                     <div>
                         <h2 className="text-base font-semibold tracking-tight">

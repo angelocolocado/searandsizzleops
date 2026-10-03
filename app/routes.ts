@@ -10,6 +10,7 @@ export default [
         route("/inventory/recipes/:id", "routes/inventory/build-recipe.tsx"),
 
         route("/pos/menu", "routes/pos/menu/menu.tsx"),
+        route("/pos/menu/:id", "routes/pos/menu/menu-detail.tsx"),
     ]),
     route("/categories", "routes/category-manager.tsx"),
     

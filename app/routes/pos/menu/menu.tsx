@@ -41,7 +41,8 @@ export async function clientAction({ request } : Route.ClientActionArgs){
 
 async function handleAddMenu(data: Record<string, FormDataEntryValue>) {
     try {
-        const requestPromise = api.post("v1/menus", data)
+        const { intent, ...menuData } = data
+        const requestPromise = api.post("v1/menus", menuData)
 
         toast.promise(requestPromise, {
             loading: "Adding menu...",
