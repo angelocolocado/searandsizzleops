@@ -46,7 +46,6 @@ function ModifierCard({ modifier, categories, recipes, ingredients, menus, assig
   )
   const isAddonRecipe = Boolean(modifier.source_recipe_id) && sourceRecipe?.category?.toLowerCase() === "addon"
   const displayPrice = isAddonRecipe ? sourceRecipe?.selling_price : modifier.cost
-  const displayPriceLabel = isAddonRecipe ? "Selling price" : sourceType === "Recipe" ? "Recipe cost" : "Ingredient cost"
   const unavailableLabel = isAddonRecipe ? "Price unavailable" : "Cost unavailable"
   const assignmentCount = assignments.filter((assignment) => assignment.modifier_id === modifier.id).length
 
@@ -59,14 +58,8 @@ function ModifierCard({ modifier, categories, recipes, ingredients, menus, assig
   return (
     <article className="flex min-h-[220px] flex-col rounded-xl border bg-background p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <span className="inline-flex max-w-full truncate rounded-full border bg-muted/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{categoryName}</span>
-          <h3 className="mt-2 truncate text-base font-semibold" title={modifier.name}>{modifier.name}</h3>
-        </div>
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-2 py-1 text-right dark:border-emerald-900/60 dark:bg-emerald-950/40">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-300">{displayPriceLabel}</p>
-          <p className="mt-0.5 text-sm font-semibold tabular-nums text-emerald-700 dark:text-emerald-200">{formatPrice(displayPrice, unavailableLabel)}</p>
-        </div>
+        <h3 className="truncate text-base font-semibold" title={modifier.name}>{modifier.name}</h3>
+        <span className="inline-flex max-w-full truncate rounded-full border bg-muted/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{categoryName}</span>
       </div>
 
       <div className="mt-3 flex-1 space-y-2">
@@ -75,7 +68,7 @@ function ModifierCard({ modifier, categories, recipes, ingredients, menus, assig
           <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">{sourceType} source</p>
           <div className="mt-1 flex items-center justify-between gap-2">
             <span className="truncate text-sm font-medium" title={sourceName}>{sourceName}</span>
-            {!isAddonRecipe && <span className="text-xs text-muted-foreground">{formatPrice(modifier.cost)}</span>}
+            {!isAddonRecipe && <span className="text-xs text-muted-foreground">{formatPrice(modifier.source_recipe?.selling_price)}</span>}
           </div>
         </div>
       </div>

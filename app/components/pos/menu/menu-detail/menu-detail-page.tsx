@@ -3,7 +3,7 @@ import { Link } from "react-router"
 import { Button } from "~/components/ui/button"
 import { MenuDangerZone } from "./menu-danger-zone"
 import { MenuModifiersSection, type MenuModifier, type MenuModifierAssignment } from "./menu-modifiers-section"
-import { MenuCostsSection, type MenuCostsBreakdown } from "./menu-costs-section"
+import { MenuCostsSection, type MenuCostsBreakdown, type MenuProfitBreakdown } from "./menu-costs-section"
 import { MenuEditDialog } from "./menu-edit-dialog"
 import { MenuSellingPriceSection } from "./menu-profit-section"
 import { MenuRecipeSection, type MenuRecipe } from "./menu-recipe-section"
@@ -16,7 +16,7 @@ export type MenuDetail = {
   category?: string
   description?: string | null
   selling_price?: number | string | null
-  profit?: number | string | null
+  profit?: MenuProfitBreakdown | null
   recipes?: MenuRecipe[] | null
   ingredient_costs?: number | string | null
   costs_breakdown?: MenuCostsBreakdown[] | null
@@ -103,7 +103,7 @@ export function MenuDetailPage({ menu, recipes, modifiers, assignments, menuId }
           />
         </div>
         <div className="space-y-5">
-          <MenuSellingPriceSection menuId={menuId} selling_price={menu.selling_price ?? menu.profit} />
+          <MenuSellingPriceSection menuId={menuId} selling_price={menu.selling_price} />
           <MenuCostsSection
             ingredientCosts={menu.costs_breakdown ?? []}
             ingredientsTotal={menu.ingredient_costs}
