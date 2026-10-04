@@ -20,6 +20,7 @@ export type RecipesPreviewDataType = {
   status: string
   id: string
   category: string
+  selling_price?: number | string | null
 }
 
 type ComponentProps = {

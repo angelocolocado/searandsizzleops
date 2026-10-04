@@ -25,6 +25,7 @@ import { Input } from "~/components/ui/input"
 import { Spinner } from "~/components/ui/spinner"
 import type { IngredientDataType } from "../../ingredients-stock/ingredient-stock-table/columns"
 import type { RecipeIngredientType } from "./header"
+import { unitOptions } from "~/utils/uom"
 
 type ComponentProps = {
     recipe_id?: string
@@ -32,8 +33,6 @@ type ComponentProps = {
     recipe_ingredients: RecipeIngredientType[]
     isActive: boolean
 }
-
-const unitOptions = ["pcs", "kg", "g", "lb", "oz", "L", "mL"] as const
 
 const formSchema = z.object({
     recipe_id: z.string().min(1, "Recipe is required"),

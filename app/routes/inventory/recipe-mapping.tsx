@@ -52,6 +52,22 @@ export async function clientAction({ request } : Route.ClientActionArgs){
   else if(data.intent === "delete_recipe") return await handleDeleteRecipe(data)
 }
 
+function getRecipePayload(data: Record<string, FormDataEntryValue>) {
+  const payload: Record<string, string | number | null> = {}
+
+  for (const [key, value] of Object.entries(data)) {
+    if (key !== "intent" && key !== "id" && key !== "yield_quantity" && key !== "selling_price" && typeof value === "string") {
+      payload[key] = value
+    }
+  }
+
+  const sellingPrice = typeof data.selling_price === "string" ? data.selling_price.trim() : ""
+  payload.yield_quantity = Number(data.yield_quantity)
+  payload.selling_price = sellingPrice === "" ? null : Number(sellingPrice)
+
+  return payload
+}
+
 async function handleDeleteRecipe(data: any){
   try{
     const requestPromise = api.delete(`v1/recipes/${data.id}`)
@@ -81,7 +97,7 @@ async function handleDeleteRecipe(data: any){
 async function handleUpdateRecipe(data: any){
 
   try{
-    const requestPromise = api.put(`v1/recipes/${data.id}`, data)
+    const requestPromise = api.put(`v1/recipes/${data.id}`, getRecipePayload(data))
 
     toast.promise(requestPromise, {
       loading: "Updating Recipe...",
@@ -110,7 +126,7 @@ async function handleUpdateRecipe(data: any){
 
 async function handleSetupRecipe(data: any){
   try{
-    const requestPromise = api.post('v1/recipes', data)
+    const requestPromise = api.post('v1/recipes', getRecipePayload(data))
 
     toast.promise(requestPromise, {
       loading: "Creating Recipe...",

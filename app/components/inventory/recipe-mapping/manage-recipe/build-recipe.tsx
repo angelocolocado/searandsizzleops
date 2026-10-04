@@ -25,6 +25,7 @@ export default function BuildRecipe({ recipe_details, categories_data, ingredien
             <BuildRecipeHeader
                 recipe_details={recipe_details}
                 categories_data={categories_data}
+                ingredient_data={ingredient_data}
                 handleEditSuccess={handleEditSuccess}
             />
 

@@ -15,7 +15,7 @@ import {
 
 import { type DataTableFeatures } from "./data-table-features"
 import type { CategoryDataType } from "~/components/ui/categories-manager"
-import { unitOptions } from "../add-update-drawer"
+import { unitOptions } from "~/utils/uom"
 
 
 
@@ -28,6 +28,8 @@ export type IngredientDataType = {
   reorder_level: number
   unit: string
   unit_cost?: number
+  cost_per_base?: number | string
+  converted_base_unit?: number | string
 }
 
 const getStockStatus = (

@@ -46,6 +46,7 @@ export function RecipeSection({ recipes_data } : ComponentProps){
                     onView={() => {}}
                     id={recipe.id}
                     category={recipe.category}
+                    selling_price={recipe.selling_price}
                     />
                 ))}
                 </div>

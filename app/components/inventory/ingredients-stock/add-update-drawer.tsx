@@ -45,15 +45,11 @@ import {
 import type { CategoryDataType } from "~/components/ui/categories-manager"
 import { Spinner } from "~/components/ui/spinner"
 import { id } from "zod/v4/locales"
-
-export const unitOptions = ["pcs", "kg", "g", "lb", "oz", "L", "mL"] as const
-
-const isUnit = (value: string): value is (typeof unitOptions)[number] =>
-  unitOptions.includes(value as (typeof unitOptions)[number])
+import { isUnitOfMeasure, unitOptions } from "~/utils/uom"
 
 const normalizeUnit = (value: unknown): (typeof unitOptions)[number] => {
   const unit = String(value)
-  return isUnit(unit) ? unit : "pcs"
+  return isUnitOfMeasure(unit) ? unit : "pcs"
 }
 
 type DrawerMode = "create" | "update"

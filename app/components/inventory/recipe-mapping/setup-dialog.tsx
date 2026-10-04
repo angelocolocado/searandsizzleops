@@ -45,10 +45,13 @@ import { Spinner } from "~/components/ui/spinner"
 const formSchema = z.object({
     recipe_name: z
         .string()
-        .min(2, 'Recipe Name must have atleast 2 characters'),
+        .trim()
+        .min(2, "Recipe name must have at least 2 characters.")
+        .max(50, "Recipe name must be 50 characters or fewer."),
 
     category: z
         .string()
+        .trim()
         .min(1, "Recipe Category is invalid"),
 
     yield_quantity: z.coerce
@@ -59,25 +62,40 @@ const formSchema = z.object({
     yield_unit: z
         .string()
         .trim()
-        .min(1, "Yield unit is required")
-        .max(30, "Yield unit must be under 30 characters"),
+        .min(2, "Yield unit must be at least 2 characters.")
+        .max(20, "Yield unit must be 20 characters or fewer."),
 
     notes: z
         .string()
         .max(1000, "Notes must be under 1000 characters")
         .optional(),
 
+    selling_price: z
+        .string()
+        .trim()
+        .refine((value) => value === "" || (/^\d+(\.\d{1,2})?$/.test(value) && Number.isFinite(Number(value))), {
+            message: "Selling price must be a non-negative amount with up to 2 decimal places.",
+        }),
+
     custom_yield_unit: z
         .string()
         .trim()
-        .max(30, "Yield unit must be under 30 characters")
+        .max(20, "Yield unit must be 20 characters or fewer.")
         .optional(),
 }).superRefine((data, context) => {
-    if (data.yield_unit === "custom" && !data.custom_yield_unit) {
+    if (data.yield_unit === "custom" && (data.custom_yield_unit?.trim().length ?? 0) < 2) {
         context.addIssue({
             code: "custom",
             path: ["custom_yield_unit"],
-            message: "Custom yield unit is required",
+            message: "Custom yield unit must be at least 2 characters.",
+        })
+    }
+
+    if (data.category.toLowerCase() === "addon" && data.selling_price === "") {
+        context.addIssue({
+            code: "custom",
+            path: ["selling_price"],
+            message: "Selling price is required for Addon recipes.",
         })
     }
 })
@@ -93,6 +111,7 @@ type ComponentProps = {
         category: string
         yield_quantity: number
         yield_unit: string
+        selling_price?: number | string | null
         notes?: string | null
     } | null
     mode?: "setup" | "edit"
@@ -134,10 +153,11 @@ export function SetupRecipeDialog({
 
     const resetFormValues = recipe_details
         ? {
-            recipe_name: recipe_details.recipe_name,
-            category: recipe_details.category,
+            recipe_name: recipe_details.recipe_name ?? "",
+            category: recipe_details.category ?? "",
             yield_quantity: String(recipe_details.yield_quantity),
             yield_unit: yieldUnits.includes(recipe_details.yield_unit) ? recipe_details.yield_unit : "custom",
+            selling_price: recipe_details.selling_price == null ? "" : String(recipe_details.selling_price),
             notes: recipe_details.notes || "",
             custom_yield_unit: yieldUnits.includes(recipe_details.yield_unit) ? "" : recipe_details.yield_unit,
         }
@@ -146,6 +166,7 @@ export function SetupRecipeDialog({
             category: "",
             yield_quantity: "",
             yield_unit: "serving",
+            selling_price: "",
             notes: "",
             custom_yield_unit: "",
         }
@@ -166,6 +187,7 @@ export function SetupRecipeDialog({
         fetcher.submit({
             ...recipeData,
             yield_unit: data.yield_unit === "custom" ? custom_yield_unit?.trim() || "" : data.yield_unit,
+            selling_price: data.selling_price === "" ? null : Number(data.selling_price),
             intent: `${mode}_recipe`,
             ...(mode === "edit" && recipe_details?.recipe_id ? { id: recipe_details.recipe_id } : {}),
         },
@@ -193,6 +215,7 @@ export function SetupRecipeDialog({
                             <FieldLabel>Recipe Name</FieldLabel>
                             <Input
                                 placeholder="e.g. Adobo"
+                                maxLength={50}
                                 {...register('recipe_name')}
                             />
                             {errors.recipe_name && <FieldError>{errors.recipe_name.message}</FieldError>} 
@@ -233,6 +256,23 @@ export function SetupRecipeDialog({
                             </Select>
                             {errors.category && <FieldError>{errors.category.message}</FieldError>}
                         </Field>
+
+                        {(watch("category") ?? "").trim().toLowerCase() === "addon" && (
+                            <Field>
+                                <FieldLabel htmlFor="selling_price">Selling price</FieldLabel>
+                                <Input
+                                    id="selling_price"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    aria-invalid={Boolean(errors.selling_price)}
+                                    {...register("selling_price")}
+                                />
+                                <FieldDescription>Required for Addon recipes; enter the price charged to customers.</FieldDescription>
+                                {errors.selling_price && <FieldError>{errors.selling_price.message}</FieldError>}
+                            </Field>
+                        )}
 
                         <div className="grid gap-5 sm:grid-cols-2">
                             <Field>
@@ -285,6 +325,7 @@ export function SetupRecipeDialog({
                                 <Input
                                     id="custom_yield_unit"
                                     placeholder="e.g. tub"
+                                    maxLength={20}
                                     aria-invalid={Boolean(errors.custom_yield_unit)}
                                     {...register("custom_yield_unit", {
                                         required: "Custom yield unit is required",

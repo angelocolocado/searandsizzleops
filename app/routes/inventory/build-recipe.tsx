@@ -100,6 +100,8 @@ async function handleAddRecipeIngredient(data: any){
         : "Something went wrong while adding the recipe ingredient.",
     })
 
+    await requestPromise
+
     return {
       success: true,
       intent: "add_recipe_ingredient"

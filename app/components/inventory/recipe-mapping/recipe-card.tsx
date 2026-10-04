@@ -12,6 +12,7 @@ type ComponentProps = {
   status: string
   id: string
   category: string
+  selling_price?: number | string | null
   onView?: () => void
 }
 
@@ -30,6 +31,7 @@ export function RecipePreviewCard({
   status,
   id,
   category,
+  selling_price,
   onView,
 }: ComponentProps) {
 
@@ -54,7 +56,14 @@ export function RecipePreviewCard({
 
       <div className="mt-3 flex items-center justify-between">
 
-        <p className="mt-1 text-xs text-muted-foreground truncate">{category}</p>
+        <div className="min-w-0">
+          <p className="mt-1 truncate text-xs text-muted-foreground">{category}</p>
+          {category?.toLowerCase() === "addon" && selling_price != null && (
+            <p className="mt-1 text-xs font-medium text-foreground">
+              Selling price: {new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP" }).format(Number(selling_price))}
+            </p>
+          )}
+        </div>
 
         <NavLink to={`/inventory/recipes/${id}`}>
           <Button
