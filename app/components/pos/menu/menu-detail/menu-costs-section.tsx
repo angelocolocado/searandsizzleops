@@ -1,4 +1,4 @@
-import { ReceiptText } from "lucide-react"
+import { ReceiptText, TriangleAlert } from "lucide-react"
 
 export type MenuCostsBreakdown = {
   item_name: string
@@ -66,6 +66,9 @@ export function MenuCostsSection({ ingredientCosts, ingredientsTotal, sellingPri
   //const totalSellingPrice = baseSellingPrice === null ? null : baseSellingPrice + modifierSellingTotal
 
   const totalSellingPrice = baseSellingPrice
+  const totalProfit = toNumber(profit?.total)
+  const isProfitWarning = totalProfit !== null && totalProfit <= 10
+  const isLoss = totalProfit !== null && totalProfit <= 0
 
   return (
     <section className="overflow-hidden rounded-xl border bg-card">
@@ -89,7 +92,25 @@ export function MenuCostsSection({ ingredientCosts, ingredientsTotal, sellingPri
         <BreakdownGroup title="Totals" emphasized>
           <SummaryRow label="Total selling price" value={formatCurrency(totalSellingPrice)} emphasized />
           <SummaryRow label="Total ingredient cost" value={formatCurrency(ingredientsTotal)} />
-          <SummaryRow label="Total profit" value={formatCurrency(profit?.total)} emphasized />
+          {isProfitWarning && (
+            <div
+              role="alert"
+              className="flex items-start gap-2 border-t border-destructive/20 bg-destructive/5 px-2 py-2.5 text-xs text-destructive"
+            >
+              <TriangleAlert className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+              <span>
+                {isLoss
+                  ? "This menu is at break-even or operating at a loss."
+                  : "This menu has a low profit margin."}
+              </span>
+            </div>
+          )}
+          <SummaryRow
+            label="Total profit"
+            value={formatCurrency(profit?.menu)}
+            emphasized
+            destructive={isProfitWarning}
+          />
         </BreakdownGroup>
 
         <div className="border-t pt-4">
@@ -128,11 +149,21 @@ function BreakdownGroup({
   )
 }
 
-function SummaryRow({ label, value, emphasized = false }: { label: string; value: string; emphasized?: boolean }) {
+function SummaryRow({
+  label,
+  value,
+  emphasized = false,
+  destructive = false,
+}: {
+  label: string
+  value: string
+  emphasized?: boolean
+  destructive?: boolean
+}) {
   return (
     <div className="flex items-center justify-between gap-3 py-2.5 text-sm">
-      <span className={emphasized ? "font-semibold" : "text-muted-foreground"}>{label}</span>
-      <span className={`${emphasized ? "font-semibold" : "font-medium"} shrink-0 tabular-nums`}>{value}</span>
+      <span className={`${emphasized ? "font-semibold" : "text-muted-foreground"} ${destructive ? "text-destructive" : ""}`}>{label}</span>
+      <span className={`${emphasized ? "font-semibold" : "font-medium"} shrink-0 tabular-nums ${destructive ? "text-destructive" : ""}`}>{value}</span>
     </div>
   )
 }
