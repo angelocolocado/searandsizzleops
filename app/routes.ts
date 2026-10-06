@@ -2,6 +2,9 @@ import { type RouteConfig, index, route, layout } from "@react-router/dev/routes
 
 export default [
 
+    route("/login", "routes/authentication/login.tsx"),
+    route("/two-factor-challenge", "routes/authentication/2fa-challenge.tsx"),
+
     layout("./layout/sidebar-layout.tsx", [
         index("routes/home.tsx"),
         route("/inventory/stock", "routes/inventory/inventory-stock.tsx"),
@@ -12,6 +15,8 @@ export default [
         route("/pos/menu", "routes/pos/menu/menu.tsx"),
         route("/pos/menu/:id", "routes/pos/menu/menu-detail.tsx"),
         route("/pos/modifiers", "routes/pos/modifiers.tsx"),
+
+        route("/system/user-management", "routes/system-settings/user-management.tsx"),
     ]),
     route("/categories", "routes/category-manager.tsx"),
     

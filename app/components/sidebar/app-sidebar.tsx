@@ -35,6 +35,8 @@ export function AppSidebar() {
         <SidebarNavigations title="Inventory Management" nav_items={navItems.inventory}  />
         <SidebarNavigations title="Point of Sale Management" nav_items={navItems.pos}  />
         <SidebarNavigations title="Marketing / Promotions" nav_items={navItems.marketing}  />
+        <SidebarNavigations title="System Settings" nav_items={navItems.system_settings}  />
+
 
       </SidebarContent>
       <SidebarFooter />

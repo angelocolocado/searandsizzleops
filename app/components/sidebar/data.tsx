@@ -5,7 +5,8 @@
   Utensils,
   Barrel,
   BadgeDollarSign,
-  Receipt
+  Receipt,
+  BookUser
 } from "lucide-react"
 
 
@@ -88,6 +89,18 @@ export const navItems = {
         { label: "Inventory Management", url: "#" },
         { label: "Recipe Mapping", url: "/inventory/recipes" },
         { label: "Build Recipe", url: "#" },
+      ],
+    },
+  ],
+
+  system_settings: [
+    {
+      title: "User Management",
+      url: "/system/user-management",
+      icon: BookUser,
+      breadcrumbs: [
+        { label: "System Settings", url: "#" },
+        { label: "User / Staff Account Management", url: "/inventory/recipes" },
       ],
     },
   ]
