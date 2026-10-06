@@ -27,6 +27,7 @@ const ROOT_ROUTES = [
   "/reset-password",
   "/two-factor-challenge",
   "/sanctum/csrf-cookie",
+  "user/profile-information"
 ];
 
 api.interceptors.request.use(
