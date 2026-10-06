@@ -1,5 +1,5 @@
 import type { Route } from "./+types/inventory-stock";
-import StockList from "~/components/inventory/stock-list";
+import StockList from "~/components/inventory/bluetooth-printer";
 
 export function meta({}: Route.MetaArgs) {
   return [
