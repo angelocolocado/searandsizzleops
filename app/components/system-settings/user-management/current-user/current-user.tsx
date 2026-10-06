@@ -3,10 +3,6 @@ import {
   BadgeCheck,
   Check,
   Copy,
-  Eye,
-  EyeOff,
-  KeyRound,
-  LockKeyhole,
   RefreshCw,
   ShieldCheck,
   ShieldOff,
@@ -18,6 +14,7 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import ProfileInformation from "./profile-information"
+import PasswordInformation from "./password-information"
 
 export type CurrentUserType = {
   id: number
@@ -112,50 +109,6 @@ export function StatusNotice({ notice }: { notice: Notice | null }) {
   )
 }
 
-function PasswordField({
-  id,
-  label,
-  value,
-  onChange,
-  visible,
-  onToggleVisibility,
-  autoComplete,
-}: {
-  id: string
-  label: string
-  value: string
-  onChange: (value: string) => void
-  visible: boolean
-  onToggleVisibility: () => void
-  autoComplete: string
-}) {
-  return (
-    <div className="space-y-2">
-      <label htmlFor={id} className="text-sm font-medium">{label}</label>
-      <div className="relative">
-        <Input
-          id={id}
-          type={visible ? "text" : "password"}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          autoComplete={autoComplete}
-          className="h-10 pr-11"
-          required
-        />
-        <button
-          type="button"
-          className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={`${visible ? "Hide" : "Show"} ${label.toLowerCase()}`}
-          aria-pressed={visible}
-          onClick={onToggleVisibility}
-        >
-          {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export default function CurrentUserUI({ user }: ComponentProps) {
 
   const [profile, setProfile] = useState({
@@ -164,17 +117,6 @@ export default function CurrentUserUI({ user }: ComponentProps) {
     username: user.username,
   })
   const [profileNotice, setProfileNotice] = useState<Notice | null>(null)
-  const [passwordNotice, setPasswordNotice] = useState<Notice | null>(null)
-  const [passwords, setPasswords] = useState({
-    current: "",
-    next: "",
-    confirmation: "",
-  })
-  const [passwordVisibility, setPasswordVisibility] = useState({
-    current: false,
-    next: false,
-    confirmation: false,
-  })
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(Boolean(user.two_factor_confirmed_at))
   const [showSetup, setShowSetup] = useState(false)
   const [otp, setOtp] = useState("")
@@ -183,22 +125,6 @@ export default function CurrentUserUI({ user }: ComponentProps) {
   const [showRecoveryCodes, setShowRecoveryCodes] = useState(false)
   const [copyNotice, setCopyNotice] = useState<Notice | null>(null)
 
-
-  function updatePassword(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    if (passwords.next !== passwords.confirmation) {
-      setPasswordNotice({ kind: "error", message: "The new passwords do not match." })
-      return
-    }
-    if (passwords.next.length < 8) {
-      setPasswordNotice({ kind: "error", message: "Your new password must be at least 8 characters." })
-      return
-    }
-
-    setPasswords({ current: "", next: "", confirmation: "" })
-    setPasswordNotice({ kind: "success", message: "Your password has been updated." })
-  }
 
   function confirmTwoFactor(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -227,10 +153,6 @@ export default function CurrentUserUI({ user }: ComponentProps) {
     }
   }
 
-  function togglePasswordVisibility(field: keyof typeof passwordVisibility) {
-    setPasswordVisibility((current) => ({ ...current, [field]: !current[field] }))
-  }
-
   return (
     <section aria-labelledby="account-settings-heading" className="space-y-5">
       <div>
@@ -243,52 +165,7 @@ export default function CurrentUserUI({ user }: ComponentProps) {
       <div className="grid gap-5 lg:grid-cols-2">
         <ProfileInformation email={profile.email} mode={user.mode} name={profile.name} username={profile.username} />
 
-        <Card aria-labelledby="password-heading">
-          <SectionHeading
-            icon={<KeyRound className="size-4" aria-hidden="true" />}
-            title="Change password"
-            description="Choose a strong password you do not use elsewhere."
-            titleId="password-heading"
-          />
-          <CardContent>
-            <form onSubmit={updatePassword} className="space-y-4">
-              <PasswordField
-                id="current-password"
-                label="Current password"
-                value={passwords.current}
-                onChange={(current) => setPasswords({ ...passwords, current })}
-                visible={passwordVisibility.current}
-                onToggleVisibility={() => togglePasswordVisibility("current")}
-                autoComplete="current-password"
-              />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <PasswordField
-                  id="new-password"
-                  label="New password"
-                  value={passwords.next}
-                  onChange={(next) => setPasswords({ ...passwords, next })}
-                  visible={passwordVisibility.next}
-                  onToggleVisibility={() => togglePasswordVisibility("next")}
-                  autoComplete="new-password"
-                />
-                <PasswordField
-                  id="confirm-password"
-                  label="Confirm new password"
-                  value={passwords.confirmation}
-                  onChange={(confirmation) => setPasswords({ ...passwords, confirmation })}
-                  visible={passwordVisibility.confirmation}
-                  onToggleVisibility={() => togglePasswordVisibility("confirmation")}
-                  autoComplete="new-password"
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">Use at least 8 characters for your new password.</p>
-              <StatusNotice notice={passwordNotice} />
-              <div className="flex justify-end">
-                <Button type="submit"><LockKeyhole aria-hidden="true" /> Update password</Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+        <PasswordInformation />
 
         <Card className="lg:col-span-2" aria-labelledby="two-factor-heading">
           <SectionHeading

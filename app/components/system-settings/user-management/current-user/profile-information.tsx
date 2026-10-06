@@ -75,7 +75,6 @@ export default function ProfileInformation({ email, mode, name, username }: Comp
                 {...register("name")}
                 placeholder="Your name"
                 autoComplete="name"
-                className="h-10"
                 aria-invalid={Boolean(errors.name)}
                 aria-describedby={errors.name ? "profile-name-error" : undefined}
               />
@@ -92,7 +91,6 @@ export default function ProfileInformation({ email, mode, name, username }: Comp
                 {...register("email")}
                 placeholder="you@example.com"
                 autoComplete="email"
-                className="h-10"
                 aria-invalid={Boolean(errors.email)}
                 aria-describedby={errors.email ? "profile-email-error" : undefined}
               />
@@ -108,7 +106,6 @@ export default function ProfileInformation({ email, mode, name, username }: Comp
                 {...register("username")}
                 placeholder="Username"
                 autoComplete="username"
-                className="h-10"
                 aria-invalid={Boolean(errors.username)}
                 aria-describedby={errors.username ? "profile-username-error" : undefined}
               />

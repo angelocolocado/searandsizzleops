@@ -30,9 +30,27 @@ export async function clientAction({ request } : Route.ClientActionArgs){
 
   switch(data.intent){
     case "update_profile_information": return await handleUpdateUserProfileInformation(data)
+    case "update_password": return await handleUpdatePassword(data)
   }
 
 
+}
+
+async function handleUpdatePassword(data: any){
+  try{
+    const requestPromise = api.put('user/password', data)
+
+    toast.promise(requestPromise, {
+      loading: "Updating password...",
+      success: "Password has been updated!",
+      error: (err) => axios.isAxiosError(err) ? err.response?.data?.message : "Something went wrong..."
+    })
+
+    await requestPromise
+
+  } catch(err) { 
+      return axios.isAxiosError(err) && err.response?.status == 422 ?  err.response?.data?.message : "Something went wrong..."
+   }
 }
 
 async function handleUpdateUserProfileInformation(data: any){
