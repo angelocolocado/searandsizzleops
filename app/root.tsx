@@ -13,6 +13,7 @@ import "./app.css";
 import { useEffect } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { Spinner } from "~/components/ui/spinner";
 
 NProgress.configure({
   showSpinner: false
@@ -51,6 +52,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+export function HydrateFallback() {
+  return (
+    <main className="flex h-[100vh] w-full items-center justify-center">
+      <Spinner />
+    </main>
   );
 }
 

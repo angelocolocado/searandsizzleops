@@ -3,7 +3,6 @@ import { AppSidebar } from "~/components/sidebar/app-sidebar"
 import { NavLink, Outlet, useLocation } from "react-router"
 import { Toaster } from "~/components/ui/sonner"
 import { Skeleton } from "~/components/ui/skeleton"
-import { Spinner } from "~/components/ui/spinner"
 import React from "react"
 import {
   Breadcrumb,
@@ -18,14 +17,6 @@ import { getBreadcrumbs } from "~/utils/getBreadcrumbs"
 type ItemType = {
   label: string,
   url: string
-}
-
-export function HydrateFallback(){
-    return (
-        <main className="flex items-center justify-center w-full h-[100vh]">
-          <Spinner />
-        </main>
-    )
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
