@@ -54,7 +54,7 @@ export default function Login({ actionData, loaderData } : Route.ComponentProps)
     }, []);
 
     return (<>
-      <main className="w-full h-[99vh] flex items-center justify-center">
+      <main className="animate-in fade-in duration-500 ease-out scroll-smooth w-full h-[99vh] flex items-center justify-center">
         <LoginForm {...actionData} ></LoginForm>
       </main>
     </>)
