@@ -1,4 +1,4 @@
-name: Deploy RRv7 App to Z.com
+name: Deploy ops.searensizzle.com
 
 on:
   push:
@@ -19,12 +19,18 @@ jobs:
         with:
           node-version: '20'
 
+      # STEP FOR ENV FILE: Dito natin ilalagay ang .env bago mag-build
+      - name: Create .env file
+        run: |
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          echo "VITE_APP_NAME=Sear & Sizzle Ops" >> .env
+          echo "VITE_ENV=production" >> .env
+
       - name: Install dependencies & Build
         run: |
           npm ci
           npm run build
 
-      # Step 4: Upload ang built output folder sa Z.com via FTP
       - name: Sync files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
