@@ -22,7 +22,7 @@ jobs:
       # STEP FOR ENV FILE: Dito natin ilalagay ang .env bago mag-build
       - name: Create .env file
         run: |
-          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          echo "VITE_API_URL=${{ variables.VITE_API_URL }}" >> .env
           echo "VITE_APP_NAME=Sear & Sizzle Ops" >> .env
           echo "VITE_ENV=production" >> .env
 
