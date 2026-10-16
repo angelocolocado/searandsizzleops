@@ -68,7 +68,7 @@ export async function clientAction({ request, params }: Route.ClientActionArgs) 
         successMessage = "Menu details updated."
         break
       case "update_status":
-        requestPromise = api.put(`v1/menus/${menuId}`, { status: Number(formData.status) })
+        requestPromise = api.put(`v1/menu/${menuId}/publish`, { status: Number(formData.status) })
         loadingMessage = "Updating menu availability..."
         successMessage = "Menu availability updated."
         break

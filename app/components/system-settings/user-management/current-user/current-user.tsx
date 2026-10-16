@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Input } from "~/components/ui/input"
 import ProfileInformation from "./profile-information"
 import PasswordInformation from "./password-information"
+import { TwoFactorAuthenticationSection } from "./2fa-section"
 
 export type CurrentUserType = {
   id: number
@@ -32,33 +33,9 @@ type ComponentProps = {
   user: CurrentUserType
 }
 
-type Notice = {
+export type Notice = {
   kind: "success" | "error"
   message: string
-}
-
-const initialRecoveryCodes = [
-  "18420573",
-  "62941708",
-  "30586194",
-  "74823951",
-  "91264037",
-  "45607382",
-  "83719526",
-  "27054861",
-]
-
-const qrCodePlaceholder = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" role="img" aria-label="Placeholder QR code">
-    <rect width="120" height="120" rx="8" fill="#fff"/>
-    <path fill="#334155" d="M12 12h32v32H12zm8 8v16h16V20zm56-8h32v32H76zm8 8v16h16V20zM12 76h32v32H12zm8 8v16h16V84zM52 12h8v8h-8zm0 16h8v8h-8zm8 8h8v8h-8zm-8 16h8v8h-8zm16 0h8v8h-8zm16 0h8v8h-8zm16 0h8v8h-8zm-48 16h8v8h-8zm16 0h8v8h-8zm16 0h8v8h-8zm16 0h8v8h-8zm-40 8h8v8h-8zm16 0h8v8h-8zm16 8h8v8h-8zm16 0h8v8h-8zm-48 8h8v8h-8zm16 8h8v8h-8zm16-8h8v8h-8zm16 8h8v8h-8z"/>
-  </svg>
-`
-
-function createRecoveryCodes() {
-  return Array.from({ length: 8 }, () =>
-    Math.floor(Math.random() * 100_000_000).toString().padStart(8, "0")
-  )
 }
 
 export function SectionHeading({
@@ -116,42 +93,7 @@ export default function CurrentUserUI({ user }: ComponentProps) {
     email: user.email,
     username: user.username,
   })
-  const [profileNotice, setProfileNotice] = useState<Notice | null>(null)
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(Boolean(user.two_factor_confirmed_at))
-  const [showSetup, setShowSetup] = useState(false)
-  const [otp, setOtp] = useState("")
-  const [twoFactorNotice, setTwoFactorNotice] = useState<Notice | null>(null)
-  const [recoveryCodes, setRecoveryCodes] = useState(initialRecoveryCodes)
-  const [showRecoveryCodes, setShowRecoveryCodes] = useState(false)
-  const [copyNotice, setCopyNotice] = useState<Notice | null>(null)
 
-
-  function confirmTwoFactor(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!/^\d{6}$/.test(otp)) {
-      setTwoFactorNotice({ kind: "error", message: "Enter the 6-digit code from your authenticator app." })
-      return
-    }
-
-    setTwoFactorEnabled(true)
-    setShowSetup(false)
-    setOtp("")
-    setTwoFactorNotice({ kind: "success", message: "Two-factor authentication is now enabled." })
-  }
-
-  async function copyText(text: string, message: string) {
-    if (!navigator.clipboard?.writeText) {
-      setCopyNotice({ kind: "error", message: "Clipboard access is unavailable in this browser." })
-      return
-    }
-
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopyNotice({ kind: "success", message })
-    } catch {
-      setCopyNotice({ kind: "error", message: "Could not copy to the clipboard. Please try again." })
-    }
-  }
 
   return (
     <section aria-labelledby="account-settings-heading" className="space-y-5">
@@ -167,181 +109,7 @@ export default function CurrentUserUI({ user }: ComponentProps) {
 
         <PasswordInformation />
 
-        <Card className="lg:col-span-2" aria-labelledby="two-factor-heading">
-          <SectionHeading
-            icon={<ShieldCheck className="size-4" aria-hidden="true" />}
-            title="Two-factor authentication"
-            description="Add another layer of security to your account."
-            titleId="two-factor-heading"
-          />
-          <CardContent className="space-y-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-2">
-                <span
-                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
-                    twoFactorEnabled
-                      ? "bg-emerald-600/10 text-emerald-700 dark:text-emerald-400"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  <span className={`size-1.5 rounded-full ${twoFactorEnabled ? "bg-emerald-600" : "bg-muted-foreground"}`} />
-                  2FA {twoFactorEnabled ? "Enabled" : "Disabled"}
-                </span>
-                <p className="text-sm text-muted-foreground">
-                  {twoFactorEnabled
-                    ? "Your account requires an authenticator code when signing in."
-                    : "Protect your account with a code from an authenticator app."}
-                </p>
-              </div>
-              {twoFactorEnabled ? (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => {
-                    setTwoFactorEnabled(false)
-                    setShowRecoveryCodes(false)
-                    setShowSetup(false)
-                    setTwoFactorNotice({ kind: "success", message: "Two-factor authentication has been disabled." })
-                  }}
-                >
-                  <ShieldOff aria-hidden="true" /> Disable 2FA
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={() => {
-                    setShowSetup((visible) => !visible)
-                    setTwoFactorNotice(null)
-                    setCopyNotice(null)
-                  }}
-                >
-                  <ShieldPlus aria-hidden="true" /> {showSetup ? "Cancel setup" : "Enable 2FA"}
-                </Button>
-              )}
-            </div>
-
-            <StatusNotice notice={twoFactorNotice} />
-
-            {!twoFactorEnabled && showSetup && (
-              <div className="space-y-5 rounded-xl border bg-muted/20 p-4 sm:p-5">
-                <div>
-                  <h3 className="text-sm font-semibold">Set up your authenticator app</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Scan this code with your authenticator app, or enter the setup key manually.
-                  </p>
-                </div>
-                <div className="grid gap-5 sm:grid-cols-[auto_1fr] sm:items-center">
-                  <div
-                    className="mx-auto flex size-36 items-center justify-center rounded-lg border bg-white p-3"
-                    dangerouslySetInnerHTML={{ __html: qrCodePlaceholder }}
-                  />
-                  <div className="space-y-2">
-                    <label htmlFor="manual-setup-key" className="text-sm font-medium">Manual setup key</label>
-                    <div className="flex gap-2">
-                      <Input
-                        id="manual-setup-key"
-                        readOnly
-                        value={user.two_factor_secret ?? "SEAR-SIZZLE-DEMO-2FA-KEY"}
-                        className="h-10 font-mono text-xs"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        aria-label="Copy manual setup key"
-                        onClick={() => void copyText(user.two_factor_secret ?? "SEAR-SIZZLE-DEMO-2FA-KEY", "Setup key copied.")}
-                      >
-                        <Copy aria-hidden="true" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                <form onSubmit={confirmTwoFactor} className="max-w-md space-y-3">
-                  <div className="space-y-2">
-                    <label htmlFor="authenticator-code" className="text-sm font-medium">6-digit verification code</label>
-                    <Input
-                      id="authenticator-code"
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]{6}"
-                      maxLength={6}
-                      value={otp}
-                      onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
-                      placeholder="000000"
-                      autoComplete="one-time-code"
-                      className="h-10 font-mono tracking-[0.3em]"
-                      required
-                    />
-                  </div>
-                  <Button type="submit" disabled={otp.length !== 6}>
-                    <ShieldCheck aria-hidden="true" /> Confirm &amp; activate 2FA
-                  </Button>
-                </form>
-                <StatusNotice notice={copyNotice} />
-              </div>
-            )}
-
-            {twoFactorEnabled && (
-              <div className="space-y-4 border-t pt-5">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold">Recovery codes</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Keep these codes somewhere safe. Each code can only be used once.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setShowRecoveryCodes((visible) => !visible)
-                        setCopyNotice(null)
-                      }}
-                    >
-                      {showRecoveryCodes ? "Hide recovery codes" : "View recovery codes"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setRecoveryCodes(createRecoveryCodes())
-                        setShowRecoveryCodes(true)
-                        setCopyNotice({ kind: "success", message: "New recovery codes generated." })
-                      }}
-                    >
-                      <RefreshCw aria-hidden="true" /> Regenerate codes
-                    </Button>
-                  </div>
-                </div>
-
-                {showRecoveryCodes && (
-                  <div className="space-y-3">
-                    <div className="grid gap-2 rounded-lg border bg-muted/30 p-3 font-mono text-sm sm:grid-cols-2 lg:grid-cols-4">
-                      {recoveryCodes.map((code, index) => (
-                        <code key={`${code}-${index}`} className="rounded-md bg-background px-3 py-2 text-center">{code}</code>
-                      ))}
-                    </div>
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <p className="text-xs text-muted-foreground">Regenerating codes replaces your previous set.</p>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => void copyText(recoveryCodes.join("\n"), "Recovery codes copied.")}
-                      >
-                        <Copy aria-hidden="true" /> Copy codes
-                      </Button>
-                    </div>
-                    <StatusNotice notice={copyNotice} />
-                  </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <TwoFactorAuthenticationSection user={user} />
       </div>
     </section>
   )

@@ -27,6 +27,12 @@ const ROOT_ROUTES = [
   "/reset-password",
   "/two-factor-challenge",
   "/sanctum/csrf-cookie",
+  "/user/two-factor-authentication",
+  "/user/two-factor-qr-code",
+  "/user/two-factor-secret-key",
+  "/user/two-factor-recovery-codes",
+  "/user/confirmed-two-factor-authentication",
+  "/user/confirm-password",
   "user/profile-information",
   "user/password"
 ];

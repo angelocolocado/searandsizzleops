@@ -24,10 +24,11 @@ export async function clientAction({ request } : Route.ClientActionArgs){
     const data = Object.fromEntries(formData)
 
     try{
-      const response = await api.post('/login', data)
+      const response = await api.post<{ two_factor?: boolean }>('/login', data)
 
       if(response.data.two_factor){
         toast.info('2FA Enabled')
+        return redirect('/two-factor-challenge')
       }
 
       return redirect('/')

@@ -17,7 +17,7 @@ import z from "zod";
 import { Eye, EyeOff, KeyRound, UserLock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Spinner } from "~/components/ui/spinner";
-import { useNavigation, useSubmit } from "react-router";
+import { NavLink, useNavigation, useSubmit } from "react-router";
 
 const LoginFormSchema = z.object({
     username: z
@@ -80,6 +80,9 @@ export default function LoginForm({ error, message, type, buster } : ComponentPr
                 <CardDescription className="text-sm font-normal text-muted-foreground">
                     Enter your administrator credentials
                 </CardDescription>
+                <CardAction>
+                    <NavLink to={import.meta.env.VITE_POS_URL}>Login to POS</NavLink>
+                </CardAction>
             </CardHeader>
             <CardContent className="min-w-sm">
                 <form id="login" onSubmit={handleSubmit(handleOnSubmit)}>
