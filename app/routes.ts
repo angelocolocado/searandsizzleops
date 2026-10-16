@@ -18,6 +18,8 @@ export default [
         route("/pos/modifiers", "routes/pos/modifiers.tsx"),
 
         route("/system/user-management", "routes/system-settings/user-management.tsx"),
+
+        route("/paymongo", "routes/paymongo_sample_integration.tsx")
     ]),
     route("/categories", "routes/category-manager.tsx"),
     
