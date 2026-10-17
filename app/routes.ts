@@ -10,6 +10,7 @@ export default [
         index("routes/home.tsx"),
         route("/inventory/stock", "routes/inventory/inventory-stock.tsx"),
         route("/inventory/ingredients", "routes/inventory/inventory-ingredients.tsx"),
+        route("/inventory/logs", "routes/inventory/stock-movements.tsx"),
         route("/inventory/recipes", "routes/inventory/recipe-mapping.tsx"),
         route("/inventory/recipes/:id", "routes/inventory/build-recipe.tsx"),
 

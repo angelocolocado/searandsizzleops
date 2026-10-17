@@ -24,8 +24,8 @@ export default function StockList() {
       const selectedDevice = await (navigator as any).bluetooth.requestDevice({
         acceptAllDevices: true,
         optionalServices: [
-          '000018f0-0000-1000-8000-00805f9b34fb', // Standard Serial Printer Service
-          '0000ff00-0000-1000-8000-00805f9b34fb', // Common Chinese/Deli Printer Service
+          '000018f0-0000-1000-8000-00805f9b34fb',
+          '0000ff00-0000-1000-8000-00805f9b34fb',
           '0000e701-0000-1000-8000-00805f9b34fb'
         ]
       });
@@ -33,7 +33,6 @@ export default function StockList() {
       setStatus('Connecting to GATT Server...');
       const server = await selectedDevice.gatt.connect();
 
-      // Hanapin ang tamang Service at Characteristic na pwedeng sulatan (Write)
       const services = await server.getPrimaryServices();
       let targetCharacteristic: WritableCharacteristic | null = null;
 
@@ -61,10 +60,10 @@ export default function StockList() {
     }
   };
 
-  // 2. Direct Silent Print Handler (No Popups!)
+
   const handleTestPrint = async () => {
     if (!characteristic) {
-      alert('Kailangan muna i-connect ang printer!');
+      alert('Connect the printer first! Grrr.');
       return;
     }
 
@@ -82,7 +81,7 @@ export default function StockList() {
       const TEXT_BOLD_OFF = new Uint8Array([0x1b, 0x45, 0x00]); // Bold Off
       const PAPER_FEED = new Uint8Array([0x1b, 0x64, 0x04]); // Feed 4 lines
 
-      // Content ng Receipt
+
       const title = encoder.encode('SEAREN SIZZLE POS\n');
       const divider = encoder.encode('--------------------------------\n');
       const body = encoder.encode(
@@ -121,7 +120,7 @@ export default function StockList() {
     }
   };
 
-  // Helper Function para pagsamahin ang Byte Arrays
+
   const combineUint8Arrays = (arrays: Uint8Array[]) => {
     const totalLength = arrays.reduce((acc, curr) => acc + curr.length, 0);
     const result = new Uint8Array(totalLength);
