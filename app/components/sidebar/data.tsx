@@ -70,12 +70,11 @@ export const navItems = {
     },
     {
       title: "Sales History",
-      url: "/inventory/recipes/:id",
+      url: "/pos/sales-history",
       icon: BadgeDollarSign,
       breadcrumbs: [
-        { label: "Inventory Management", url: "#" },
-        { label: "Recipe Mapping", url: "/inventory/recipes" },
-        { label: "Build Recipe", url: "#" },
+        { label: "Point of Sale Management", url: "#" },
+        { label: "Sales History", url: "/pos/sales-history" },
       ],
     },
   ],

@@ -17,6 +17,7 @@ export default [
         route("/pos/menu", "routes/pos/menu/menu.tsx"),
         route("/pos/menu/:id", "routes/pos/menu/menu-detail.tsx"),
         route("/pos/modifiers", "routes/pos/modifiers.tsx"),
+        route("/pos/sales-history", "routes/pos/sales-history.tsx"),
 
         route("/system/user-management", "routes/system-settings/user-management.tsx"),
 
