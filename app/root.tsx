@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { Spinner } from "~/components/ui/spinner";
+import { SkeletonMui } from "./components/ui/skeleton copy";
 
 NProgress.configure({
   showSpinner: false
@@ -56,9 +57,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export function HydrateFallback() {
+  useEffect(() => {
+    NProgress.start();
+    return () => {
+      NProgress.done();
+    };
+  }, []);
+
   return (
-    <main className="flex h-[100vh] w-full items-center justify-center">
-      <Spinner />
+    <main className="flex w-full h-screen bg-white gap-5 dark:bg-gray-900 p-10">
+      <SkeletonMui className="h-full w-[16rem] rounded-md" />
+      <div className="w-full flex flex-col gap-5">
+        <SkeletonMui className="h-[50px] w-full rounded-md" />
+        <SkeletonMui className="h-full w-full rounded-md" />
+      </div>
     </main>
   );
 }
